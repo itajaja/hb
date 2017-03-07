@@ -1,16 +1,18 @@
-import { IAction } from './actions/action'
+import { UnitAction } from './actions/action'
+import Game from './game'
 import Hex from './hex'
 import Thing from './thing'
 
 interface IUnitConfig {
-  id: string
   factionId: string
+  game: Game
   pos: Hex
   type: IUnitType
 }
 
 export enum UnitState {
   Normal,
+  Guard,
   Sleeping,
   Dead,
   Confused,
@@ -24,7 +26,7 @@ export interface IUnitType {
   hp: number
   mp: number
 
-  actions: Array<IAction<{}>>,
+  actions: Array<typeof UnitAction>,
 }
 
 export default class Unit extends Thing {
@@ -34,17 +36,59 @@ export default class Unit extends Thing {
 
   factionId: string
 
+  game: Game
+
   hp: number
   mp: number
 
   state: UnitState
+  stateExpiration: number
 
-  constructor({ pos, factionId, type }: IUnitConfig) {
+  constructor({ pos, factionId, type, game }: IUnitConfig) {
     super()
     this.pos = pos
     this.factionId = factionId
     this.type = type
     this.hp = type.hp
     this.mp = type.mp
+    this.game = game
+  }
+
+  takeDamage(damage: number) {
+    if (this.state === UnitState.Guard) {
+      damage--
+    }
+
+    this.hp = Math.min(this.hp - Math.max(damage, 0), this.type.hp)
+
+    if (this.hp <= 0) {
+      // dead, remove unit
+      this.game.map.cellAt(this.pos).thing
+    }
+  }
+
+  move(hex: Hex) {
+    delete this.game.map.cellAt(this.pos).thing
+    this.pos = hex
+    this.game.map.cellAt(this.pos).thing = this
+  }
+
+  alterState(state: UnitState, exp: number) {
+    this.state = state
+    this.stateExpiration = exp
+  }
+
+  tickState() {
+    if (this.state === UnitState.Normal) {
+      return
+    }
+
+    // TODO apply state
+
+    this.stateExpiration--
+
+    if (this.stateExpiration === 0) {
+      this.state = UnitState.Normal
+    }
   }
 }

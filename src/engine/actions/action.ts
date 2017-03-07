@@ -1,4 +1,5 @@
 import Game from '../game'
+import Hex from '../hex'
 import Unit from '../unit'
 
 // tslint:disable-next-line:no-empty-interface
@@ -7,15 +8,29 @@ interface IActionResult {
 
 /**
  * Generic Action interface.
- * T is the type of the parameters passed to execution method
  */
-export interface IAction<T> {
+export interface IAction {
   name: string
   description: string
 
   game: Game
 
-  execute(params: T): IActionResult
+  execute(target: Hex): IActionResult
+
+  targets(): Hex[]
 }
 
-export type IUnitAction<T> = IAction<T & { self: Unit }>
+export class UnitAction implements IAction {
+  name: string
+  description: string
+
+  constructor(public game: Game, public unit: Unit) {}
+
+  execute(target: Hex): IActionResult {
+    throw Error('Not Implemented')
+  }
+
+  targets(): Hex[] {
+    throw Error('Not Implemented')
+  }
+}

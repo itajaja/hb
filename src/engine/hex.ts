@@ -34,7 +34,7 @@ export default class Hex {
     return this.add(dir)
   }
 
-  neighbors() {
+  get neighbors() {
     return directions.map(d => this.add(d))
   }
 

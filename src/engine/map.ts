@@ -17,11 +17,13 @@ export interface ICell {
 }
 
 export interface IMap {
-  isIn: (hex: Hex) => boolean
-
-  cellAt: (hex: Hex) => ICell | null
-
   cells: ICell[]
+
+  isIn(hex: Hex): boolean
+
+  cellAt(hex: Hex): ICell
+
+  thingsInRange(hex: Hex, radius: number): IThing[]
 }
 
 /**
@@ -48,10 +50,8 @@ export default class HexMap implements IMap {
     return hex.distance(CENTER) <= this.size
   }
 
-  cellAt(hex: Hex) {
-    if (!this.isIn(hex)) {
-      return null
-    }
+  cellAt(hex: Hex): ICell {
+    assert(this.isIn(hex), 'Cell out of map boundaries')
     const idx = hex.toString()
     const cell = this._cells[idx]
 
@@ -65,7 +65,14 @@ export default class HexMap implements IMap {
   }
 
   get cells() {
-    // we can safely cast here because we know we are inside the boundaries
-    return CENTER.range(this.size).map(this.cellAt) as ICell[]
+    return CENTER.range(this.size).map(this.cellAt)
+  }
+
+  thingsInRange(hex: Hex, radius: number): IThing[] {
+    return hex.range(radius)
+      .filter(this.isIn)
+      .map(this.cellAt)
+      .filter(c => c.thing)
+      .map(c => c.thing!)
   }
 }
