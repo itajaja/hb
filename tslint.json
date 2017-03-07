@@ -5,6 +5,7 @@
     "member-access": [false],
     "object-literal-sort-keys": false,
     "quotemark": [true, "single", "jsx-double"],
-    "semicolon": [true, "never"]
+    "semicolon": [true, "never"],
+    "variable-name": [true, "allow-leading-underscore"]
   }
 }
