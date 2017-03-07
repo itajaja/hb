@@ -1,7 +1,7 @@
-interface IFaction {
-  id: string
-  name: string
-  color: string
-}
+import gid from './gid'
 
-export default IFaction
+export default class Faction {
+  id = gid()
+
+  constructor(public name: string, public color: string) {}
+}

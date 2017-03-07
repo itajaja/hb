@@ -3,9 +3,8 @@ import Game from './game'
 import Hex from './hex'
 import Thing from './thing'
 
-interface IUnitConfig {
+export interface IUnitConfig {
   factionId: string
-  game: Game
   pos: Hex
   type: IUnitType
 }
@@ -44,7 +43,9 @@ export default class Unit extends Thing {
   state: UnitState
   stateExpiration: number
 
-  constructor({ pos, factionId, type, game }: IUnitConfig) {
+  actions: UnitAction[]
+
+  constructor(game: Game, { pos, factionId, type }: IUnitConfig) {
     super()
     this.pos = pos
     this.factionId = factionId
@@ -52,6 +53,7 @@ export default class Unit extends Thing {
     this.hp = type.hp
     this.mp = type.mp
     this.game = game
+    this.actions = type.actions.map(action => new action(game, this))
   }
 
   takeDamage(damage: number) {
@@ -63,14 +65,13 @@ export default class Unit extends Thing {
 
     if (this.hp <= 0) {
       // dead, remove unit
-      this.game.map.cellAt(this.pos).thing
+      this.game.removeThing(this)
     }
   }
 
-  move(hex: Hex) {
-    delete this.game.map.cellAt(this.pos).thing
-    this.pos = hex
-    this.game.map.cellAt(this.pos).thing = this
+  move(to: Hex) {
+    this.game.moveThing(this, to)
+    this.pos = to
   }
 
   alterState(state: UnitState, exp: number) {

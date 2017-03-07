@@ -1,9 +1,11 @@
-import IFaction from './faction'
+import Faction from './faction'
+import Hex from './hex'
 import { IMap } from './map'
 import { IThing } from './thing'
+import { default as Unit, IUnitConfig } from './unit'
 
 interface IGameConfig {
-  factions: IFaction[]
+  factions: Faction[]
   map: IMap
 }
 
@@ -15,12 +17,12 @@ interface IGameConfig {
 export default class Game {
   turn = 0
 
-  factions: {[id: string]: IFaction } = {}
+  factions: {[id: string]: Faction } = {}
   things: {[id: string]: IThing } = {}
 
   map: IMap
 
-  currentFaction: IFaction
+  currentFaction: Faction
 
   constructor({ factions, map }: IGameConfig) {
     this.map = map
@@ -33,5 +35,21 @@ export default class Game {
     })
 
     this.currentFaction = factions[0]
+  }
+
+  addUnit(unitConfig: IUnitConfig) {
+    const unit = new Unit(this, unitConfig)
+    this.map.cellAt(unit.pos).thing = unit
+    this.things[unit.id] = unit
+  }
+
+  removeThing(thing: IThing) {
+    delete this.things[thing.id]
+    delete this.map.cellAt(thing.pos).thing
+  }
+
+  moveThing(thing: IThing, to: Hex) {
+    delete this.map.cellAt(thing.pos).thing
+    this.map.cellAt(to).thing = thing
   }
 }
