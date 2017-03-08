@@ -60,6 +60,10 @@ export default class Unit extends Thing {
     this.actions = type.actions.map(Action => new Action(game, this))
   }
 
+  get faction() {
+    return this.game.factions.get(this.factionId)!
+  }
+
   get canPerformAction() {
     return !this.actionPerformed && UnitState.Confused && UnitState.Sleeping
   }

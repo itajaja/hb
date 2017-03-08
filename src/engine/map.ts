@@ -46,11 +46,11 @@ export default class HexMap implements IMap {
     })
   }
 
-  isIn(hex: Hex) {
+  isIn = (hex: Hex) => {
     return hex.distance(CENTER) <= this.size
   }
 
-  cellAt(hex: Hex): ICell {
+  cellAt = (hex: Hex): ICell => {
     assert(this.isIn(hex), 'Cell out of map boundaries')
     const idx = hex.toString()
     const cell = this._cells[idx]
