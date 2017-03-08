@@ -1,6 +1,7 @@
 import { UnitAction } from './actions/action'
 import Game from './game'
 import Hex from './hex'
+import { ICell, Terrain } from './map'
 import Thing from './thing'
 
 export interface IUnitConfig {
@@ -46,6 +47,8 @@ export default class Unit extends Thing {
 
   actions: UnitAction[]
 
+  walkableTerrains = [Terrain.Ground, Terrain.Water, Terrain.Forest]
+
   constructor(game: Game, { pos, factionId, type }: IUnitConfig) {
     super()
     this.pos = pos
@@ -77,6 +80,23 @@ export default class Unit extends Thing {
   move(to: Hex) {
     this.game.moveThing(this, to)
     this.pos = to
+    this.mp = this.type.mp - to.distance(this.pos)
+  }
+
+  moveTargets(): Hex[] {
+    return this.pos.range(this.mp, 1)
+      .filter(this.game.map.isIn)
+      .map(this.game.map.cellAt)
+      .filter(this.canWalkOn)
+      .map(c => c.pos)
+  }
+
+  canWalkOn(cell: ICell) {
+    if (cell.thing && cell.thing instanceof Unit) {
+      return false
+    }
+
+    return this.walkableTerrains.lastIndexOf(cell.terrain) >= 0
   }
 
   alterState(state: UnitState, exp: number) {
@@ -89,16 +109,16 @@ export default class Unit extends Thing {
    */
   tickTurn() {
     this.actionPerformed = false
-    if (this.state === UnitState.Normal) {
-      return
-    }
+    this.mp = this.type.mp
 
-    // TODO apply state
+    if (this.state !== UnitState.Normal) {
+      // TODO apply state
 
-    this.stateExpiration--
+      this.stateExpiration--
 
-    if (this.stateExpiration === 0) {
-      this.state = UnitState.Normal
+      if (this.stateExpiration === 0) {
+        this.state = UnitState.Normal
+      }
     }
   }
 }

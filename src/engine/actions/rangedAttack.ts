@@ -19,7 +19,7 @@ export default class RangedAttack extends UnitAction {
 
   targets() {
     const { pos } = this.unit
-    return [...pos.circle(2), ...pos.circle(3), ...pos.circle(4)]
+    return pos.range(4, 2)
       .filter(this.game.map.isIn)
   }
 }

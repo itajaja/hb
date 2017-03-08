@@ -6,7 +6,7 @@ export enum Terrain {
   Ground,
   Water,
   Wall,
-  Weeds,
+  Forest,
   Pit,
 }
 

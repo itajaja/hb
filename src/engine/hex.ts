@@ -1,3 +1,5 @@
+import assert from './assert'
+
 /**
  * utility library for operations over hex maps
  * source: http://www.redblobgames.com/grids/hexagons/
@@ -6,6 +8,7 @@
 /**
  * Immutable class representing an hexagon
  */
+
 export default class Hex {
   constructor(private _q: number, private _r: number) {}
 
@@ -38,12 +41,14 @@ export default class Hex {
     return directions.map(d => this.add(d))
   }
 
-  distance(x: Hex) {
-     const sub = this.sub(x)
+  distance(from: Hex) {
+     const sub = this.sub(from)
      return Math.max(Math.abs(sub.q), Math.abs(sub.r), Math.abs(sub.r))
   }
 
   circle(radius: number) {
+    assert(radius >= 0, 'radius must be greater or equal than 1')
+
     const result: Hex[] = []
     let hex = this.add(directions[4].scale(radius))
 
@@ -56,12 +61,19 @@ export default class Hex {
     return result
   }
 
-  range(radius: number): Hex[] {
+  range(radius: number, innerRadius = 0): Hex[] {
+    assert(radius >= innerRadius, 'radius must be greater than innerRadius')
+    assert(innerRadius >= 0, 'innerRadius must be greater or equal than 0')
+
     if (radius === 0) {
       return [this]
-    } else {
-      return this.circle(radius).concat(this.range(radius - 1))
     }
+
+    const circle = this.circle(radius)
+
+    return radius === innerRadius
+      ? circle
+      : [...circle, ...this.range(radius - 1)]
   }
 }
 
