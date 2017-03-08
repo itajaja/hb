@@ -27,7 +27,7 @@ export class UnitAction implements IAction {
   constructor(public game: Game, public unit: Unit) {}
 
   execute(target: Hex): IActionResult {
-    this.unit.moved = true
+    this.unit.actionPerformed = true
     return this.performAction(target)
   }
 

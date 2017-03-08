@@ -13,7 +13,6 @@ export enum UnitState {
   Normal,
   Guard,
   Sleeping,
-  Dead,
   Confused,
   Poisoned,
 }
@@ -40,7 +39,7 @@ export default class Unit extends Thing {
   hp: number
   mp: number
 
-  moved = false
+  actionPerformed = false
 
   state: UnitState
   stateExpiration: number
@@ -56,6 +55,10 @@ export default class Unit extends Thing {
     this.mp = type.mp
     this.game = game
     this.actions = type.actions.map(Action => new Action(game, this))
+  }
+
+  get canPerformAction() {
+    return !this.actionPerformed && UnitState.Confused && UnitState.Sleeping
   }
 
   takeDamage(damage: number) {
@@ -85,7 +88,7 @@ export default class Unit extends Thing {
    * reset the unit state before the turn begins
    */
   tickTurn() {
-    this.moved = false
+    this.actionPerformed = false
     if (this.state === UnitState.Normal) {
       return
     }
