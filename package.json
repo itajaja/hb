@@ -5,13 +5,18 @@
   "scripts": {
     "build": "tsc",
     "lint": "tslint --project tsconfig.json",
-    "test": "npm run lint && npm run build"
+    "test": "npm run lint && npm run build",
+    "start": "bankai lib/index.js -d -p 8080"
   },
   "author": "Giacomo Tagliabue",
   "license": "MIT",
   "devDependencies": {
+    "bankai": "^5.4.0",
     "tslint": "^4.5.1",
     "typescript": "^2.2.1"
   },
-  "dependencies": {}
+  "dependencies": {
+    "aphrodite": "^1.1.0",
+    "choo": "^4.1.0"
+  }
 }

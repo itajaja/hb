@@ -1,13 +1,13 @@
 {
   "compilerOptions": {
     "target": "es5",
-    // "module": "commonjs",
     "outDir": "lib",
     "strictNullChecks": true,
     "sourceMap": true,
     // "noImplicitAny": false,
     "noUnusedLocals": true,
     "lib": [
+      "dom",
       "es2015"
     ]
   }
