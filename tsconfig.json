@@ -6,7 +6,10 @@
     "strictNullChecks": true,
     "sourceMap": true,
     // "noImplicitAny": false,
-    "noUnusedLocals": true
+    "noUnusedLocals": true,
+    "lib": [
+      "es2015"
+    ]
   }
   // "files": [
   //   "src/index.tsx"

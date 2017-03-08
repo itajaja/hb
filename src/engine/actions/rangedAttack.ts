@@ -8,7 +8,7 @@ export default class RangedAttack extends UnitAction {
 
   damage = 2
 
-  execute(target: Hex) {
+  performAction(target: Hex) {
     const targetUnit = this.game.map.cellAt(target).thing
     if (targetUnit instanceof Unit) {
       targetUnit.takeDamage(this.damage)

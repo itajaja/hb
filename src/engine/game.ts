@@ -15,41 +15,66 @@ interface IGameConfig {
  * - managing the game loop
  */
 export default class Game {
-  turn = 0
+  epoch = 0
+  currentFactionIndex = 0
 
-  factions: {[id: string]: Faction } = {}
-  things: {[id: string]: IThing } = {}
+  factions: Map<string, Faction> = new Map()
+  things: Map<string, IThing> = new Map()
 
   map: IMap
-
-  currentFaction: Faction
 
   constructor({ factions, map }: IGameConfig) {
     this.map = map
 
-    factions.forEach(f => this.factions[f.id] = f)
+    factions.forEach(f => this.factions.set(f.id, f))
     map.cells.forEach(({ thing }) => {
       if (thing) {
-        this.things[thing.id] = thing
+        this.things.set(thing.id, thing)
       }
     })
+  }
 
-    this.currentFaction = factions[0]
+  get currenFaction(): Faction{
+    return Array.from(this.factions.values())[this.currentFactionIndex]
   }
 
   addUnit(unitConfig: IUnitConfig) {
     const unit = new Unit(this, unitConfig)
     this.map.cellAt(unit.pos).thing = unit
-    this.things[unit.id] = unit
+    this.things.set(unit.id, unit)
   }
 
   removeThing(thing: IThing) {
-    delete this.things[thing.id]
+    this.things.delete(thing.id)
     delete this.map.cellAt(thing.pos).thing
   }
 
   moveThing(thing: IThing, to: Hex) {
     delete this.map.cellAt(thing.pos).thing
     this.map.cellAt(to).thing = thing
+  }
+
+  finishEpoch() {
+    // do something to update the state globally
+  }
+
+  prepareFactionTurn(faction: Faction) {
+    this.things.forEach(t => {
+      if (t instanceof Unit && t.factionId === faction.id) {
+        t.tickTurn()
+      }
+    })
+  }
+
+  endTurn() {
+    this.currentFactionIndex++
+    if (this.currentFactionIndex === this.factions.size) {
+      this.finishEpoch()
+
+      this.currentFactionIndex = 0
+      this.epoch++
+    }
+
+    this.prepareFactionTurn(this.currenFaction)
   }
 }

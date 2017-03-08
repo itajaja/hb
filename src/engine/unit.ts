@@ -40,6 +40,8 @@ export default class Unit extends Thing {
   hp: number
   mp: number
 
+  moved = false
+
   state: UnitState
   stateExpiration: number
 
@@ -53,7 +55,7 @@ export default class Unit extends Thing {
     this.hp = type.hp
     this.mp = type.mp
     this.game = game
-    this.actions = type.actions.map(action => new action(game, this))
+    this.actions = type.actions.map(Action => new Action(game, this))
   }
 
   takeDamage(damage: number) {
@@ -79,7 +81,11 @@ export default class Unit extends Thing {
     this.stateExpiration = exp
   }
 
-  tickState() {
+  /**
+   * reset the unit state before the turn begins
+   */
+  tickTurn() {
+    this.moved = false
     if (this.state === UnitState.Normal) {
       return
     }

@@ -27,6 +27,11 @@ export class UnitAction implements IAction {
   constructor(public game: Game, public unit: Unit) {}
 
   execute(target: Hex): IActionResult {
+    this.unit.moved = true
+    return this.performAction(target)
+  }
+
+  performAction(target: Hex): IActionResult {
     throw Error('Not Implemented')
   }
 

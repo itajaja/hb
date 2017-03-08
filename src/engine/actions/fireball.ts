@@ -11,7 +11,7 @@ export default class Fireball extends UnitAction {
   damage = 3
   range = 6
 
-  execute(target) {
+  performAction(target) {
     this.game.map.thingsInRange(target, 1).forEach(t => {
       if (t instanceof Unit) {
         t.takeDamage(this.damage)

@@ -5,7 +5,7 @@ export default class Guard extends UnitAction {
   name = 'Guard'
   description = 'put the unit in defensive position to absorb enemy attacks'
 
-  execute() {
+  performAction() {
     this.unit.alterState(UnitState.Guard, 1)
 
     return {}
