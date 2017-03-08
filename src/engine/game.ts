@@ -34,8 +34,21 @@ export default class Game {
     })
   }
 
-  get currenFaction(): Faction{
+  get currenFaction(): Faction {
     return Array.from(this.factions.values())[this.currentFactionIndex]
+  }
+
+  get factionUnits() {
+    const units: {[idx: string]: Unit[]} = {}
+
+    this.factions.forEach(f => units[f.id] = [])
+    this.things.forEach(t => {
+      if (t instanceof Unit) {
+        units[t.factionId].push(t)
+      }
+    })
+
+    return units
   }
 
   addUnit(unitConfig: IUnitConfig) {
@@ -52,6 +65,16 @@ export default class Game {
   moveThing(thing: IThing, to: Hex) {
     delete this.map.cellAt(thing.pos).thing
     this.map.cellAt(to).thing = thing
+  }
+
+  /**
+   * returns true if game over
+   */
+  checkGameOver() {
+    const units = this.factionUnits
+
+    // checks if there are some factions with 0 units
+    return Object.keys(units).map(k => units[k].length).some(u => u === 0)
   }
 
   finishEpoch() {
