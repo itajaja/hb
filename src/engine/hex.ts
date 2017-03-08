@@ -55,7 +55,7 @@ export default class Hex {
     for (let i = 0; i < 6; ++i) {
       for (let j = 0; j < radius; ++j) {
         result.push(hex)
-        hex = this.neighbor(i)
+        hex = hex.neighbor(i)
       }
     }
     return result
