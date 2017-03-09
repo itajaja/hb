@@ -9,9 +9,11 @@ declare namespace choo {
     effects?: any,
     subscriptions?: any,
   }
+
+  type Route = [string, View<{}>]
     
   interface App {
-    router(def: [string, View<{}>]): void
+    router(def: Route[]): void
 
     model<T>(config: ModelConfig<T>): void
 

@@ -4,6 +4,10 @@ const app = choo()
 
 export default app
 
+import mainView from './mainView/index'
 import stageView from './stageView/index'
 
-app.router(['/battle', stageView])
+app.router([
+  ['/', mainView],
+  ['/battle', stageView],
+])
