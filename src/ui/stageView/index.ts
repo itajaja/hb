@@ -1,10 +1,12 @@
 import { css, StyleSheet } from 'aphrodite'
 import * as html from 'choo/html'
 
+import { View } from 'choo'
+
+import Game from '../../engine/game'
+import { createNewTestGame } from '../../newGame'
 import app from '../app'
 import cell from './cell'
-
-import { createNewTestGame } from '../../newGame'
 
 const game = createNewTestGame()
 const defaultViewBoxSize = 600
@@ -18,14 +20,16 @@ const style = StyleSheet.create({
   },
 })
 
-app.model({
+interface IState { game: Game }
+
+app.model<IState>({
   state: { game },
   reducers: {
-    update: (state, data) => ({ title: data }),
+    update: (state, data: any) => ({ game: data }),
   },
 })
 
-export default function stageView(state, prev, send) {
+export default (function stageView(state, prev, send) {
   const vbFrom = -defaultViewBoxSize / 2
   const vbSize = defaultViewBoxSize
 
@@ -40,4 +44,4 @@ export default function stageView(state, prev, send) {
       </svg>
     </div>
   `
-}
+}) as View<IState>

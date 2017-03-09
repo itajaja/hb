@@ -32,7 +32,7 @@ const style = StyleSheet.create({
     strokeWidth: '.1px',
     fillRule: 'evenodd',
     fill: 'transparent',
-    fillOpacity: '.1',
+    fillOpacity: .1,
     transition: '.1s ease-in-out all',
 
     ':hover': {

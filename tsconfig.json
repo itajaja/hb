@@ -4,14 +4,10 @@
     "outDir": "lib",
     "strictNullChecks": true,
     "sourceMap": true,
-    // "noImplicitAny": false,
     "noUnusedLocals": true,
     "lib": [
       "dom",
       "es2015"
     ]
   }
-  // "files": [
-  //   "src/index.tsx"
-  // ]
 }

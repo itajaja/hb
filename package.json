@@ -3,14 +3,17 @@
   "version": "0.0.1",
   "description": "",
   "scripts": {
-    "build": "tsc",
+    "build": "npm run types && tsc",
     "lint": "tslint --project tsconfig.json",
+    "start": "bankai lib/index.js -d -p 8080",
     "test": "npm run lint && npm run build",
-    "start": "bankai lib/index.js -d -p 8080"
+    "types": "cp -r typings/* node_modules/@types",
+    "postinstall": "npm run types"
   },
   "author": "Giacomo Tagliabue",
   "license": "MIT",
   "devDependencies": {
+    "@types/aphrodite": "^0.5.5",
     "bankai": "^5.4.0",
     "tslint": "^4.5.1",
     "typescript": "^2.2.1"
