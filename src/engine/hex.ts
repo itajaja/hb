@@ -73,7 +73,7 @@ export default class Hex {
 
     return radius === innerRadius
       ? circle
-      : [...circle, ...this.range(radius - 1)]
+      : [...circle, ...this.range(radius - 1, innerRadius)]
   }
 }
 
