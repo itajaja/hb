@@ -44,6 +44,9 @@ const style = StyleSheet.create({
   selected: {
     fill: 'red',
   },
+  targeted: {
+    fill: 'yellow',
+  },
 })
 
 function translate(x, y) {
@@ -52,28 +55,29 @@ function translate(x, y) {
 
 export default function cell(cell: ICell, state: IState, actions: Actions) {
   const { pos, thing } = cell
+  const { selectedCell, targets } = state
   const { x, y } = hexCenter(pos, cellSize)
 
-  const selected = pos.toString() === state.selectedCell
+  let selected = false
+  if (selectedCell && pos.toString() ===  selectedCell.pos.toString()) {
+    selected = true
+  }
+  const targeted = targets && targets[pos.toString()] ? true : false
+
+  const polygonClass = css(
+    style.main,
+    selected && style.selected,
+    targeted && style.targeted,
+  )
 
   return html`
     <g transform=${translate(x, y)} onclick=${handleClick}>
       ${thing && thing instanceof Unit && unit(thing)}
-      <polygon
-        class=${css(style.main, selected && style.selected)}
-        points=${HEX_POINTS}
-      />
+      <polygon class=${polygonClass} points=${HEX_POINTS}/>
     </g>
   `
 
   function handleClick() {
-    actions.selectCell(cell.pos.toString())
-  //   const { actions, cell, selection } = this.props
-
-  //   if (selection && selection.actionKey) {
-  //     // perform action
-  //   } else {
-  //     actions.selectCell(cell.pos)
-  //   }
+    actions.selectCell(cell)
   }
 }

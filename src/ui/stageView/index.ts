@@ -2,7 +2,10 @@ import { css, StyleSheet } from 'aphrodite'
 import { View } from 'choo'
 import * as html from 'choo/html'
 
+import { IAction } from '../../engine/actions/action'
 import Game from '../../engine/game'
+import Hex from '../../engine/hex'
+import { ICell } from '../../engine/map'
 import { createNewTestGame } from '../../newGame'
 import app from '../app'
 import BaseActions from '../utils/Actions'
@@ -23,12 +26,19 @@ const style = StyleSheet.create({
 
 export interface IState {
   game: Game,
-  selectedCell?: string
+  selectedCell?: ICell
+  selectedAction?: IAction
+  targets?: {[idx: string]: Hex}
 }
 
-export class Actions extends BaseActions {
-  selectCell = (selectedCell: string) => {
-    this.perform({ selectedCell })
+export class Actions extends BaseActions<IState> {
+  selectCell = (selectedCell: ICell) => {
+    this.perform({ selectedCell, selectedAction: undefined })
+  }
+  selectAction = (selectedAction: IAction) => {
+    const targets = {}
+    selectedAction.targets().forEach(h => targets[h.toString()] = h)
+    this.perform({ selectedAction, targets })
   }
 }
 

@@ -2,6 +2,7 @@
   "extends": "tslint:latest",
   "rules": {
     "arrow-parens": false,
+    "max-line-length": [true, 80],
     "member-access": [false],
     "object-literal-key-quotes": [true, "as-needed"],
     "object-literal-sort-keys": false,
