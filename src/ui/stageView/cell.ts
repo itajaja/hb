@@ -4,6 +4,7 @@ import * as html from 'choo/html'
 import { ICell } from '../../engine/map'
 import Unit from '../../engine/unit'
 import unit from '../components/unit'
+import { Actions, IState } from './index'
 
 export const cellSize = 20
 
@@ -39,24 +40,34 @@ const style = StyleSheet.create({
       stroke: 'green',
     },
   },
+
+  selected: {
+    fill: 'red',
+  },
 })
 
 function translate(x, y) {
   return `translate(${x},${y})`
 }
 
-export default function cell(cell: ICell) {
+export default function cell(cell: ICell, state: IState, actions: Actions) {
   const { pos, thing } = cell
   const { x, y } = hexCenter(pos, cellSize)
 
+  const selected = pos.toString() === state.selectedCell
+
   return html`
     <g transform=${translate(x, y)} onclick=${handleClick}>
-      <polygon class=${css(style.main)} points=${HEX_POINTS}/>
       ${thing && thing instanceof Unit && unit(thing)}
+      <polygon
+        class=${css(style.main, selected && style.selected)}
+        points=${HEX_POINTS}
+      />
     </g>
   `
 
   function handleClick() {
+    actions.selectCell(cell.pos.toString())
   //   const { actions, cell, selection } = this.props
 
   //   if (selection && selection.actionKey) {

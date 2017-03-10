@@ -20,7 +20,7 @@ declare namespace choo {
     start(): Node
   }
 
-  type Send = (event: string, payload: {}, cb: () => void) => void
+  export type Send = (event: string, payload: {}, cb?: () => void) => void
 }
 
 declare function choo(): choo.App
