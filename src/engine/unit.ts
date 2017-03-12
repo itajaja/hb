@@ -69,11 +69,21 @@ export default class Unit extends Thing {
   }
 
   takeDamage(damage: number) {
+    if (damage === 0) {
+      return
+    }
+    // heal
+    if (damage < 0) {
+      const heal = -damage
+      this.hp = Math.min(this.type.hp, this.hp + heal)
+      return
+    }
+    // damage
     if (this.state === UnitState.Guard) {
       damage--
     }
 
-    this.hp = Math.min(this.hp - Math.max(damage, 0), this.type.hp)
+    this.hp = Math.max(this.hp - damage, 0)
 
     if (this.hp <= 0) {
       // dead, remove unit
