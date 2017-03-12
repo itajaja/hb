@@ -50,6 +50,14 @@ export class Actions extends BaseActions<IState> {
     selectedAction.targets().forEach(h => targets[h.toString()] = h)
     this.perform({ selectedAction, targets })
   }
+  endTurn = () => {
+    this.state.game.endTurn()
+    this.perform({
+      selectedAction: undefined,
+      targets: undefined,
+      selectedCell: undefined,
+    })
+  }
 }
 
 app.model<IState>({

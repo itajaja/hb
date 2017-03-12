@@ -42,7 +42,7 @@ export default class Unit extends Thing {
 
   actionPerformed = false
 
-  state: UnitState
+  state: UnitState = UnitState.Normal
   stateExpiration: number
 
   actions: UnitAction[]
@@ -129,6 +129,7 @@ export default class Unit extends Thing {
       // TODO apply state
 
       this.stateExpiration--
+      console.log(this.state, this.stateExpiration)
 
       if (this.stateExpiration === 0) {
         this.state = UnitState.Normal

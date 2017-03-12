@@ -25,6 +25,17 @@ const style = StyleSheet.create({
   selectedAction: {
     background: 'rgb(133, 113, 0)',
   },
+  endTurnButton: {
+    position: 'absolute',
+    bottom: 0,
+    left: 0,
+    right: 0,
+    padding: 20,
+    textAlign: 'center',
+    background: '#27272a',
+    borderTop: '2px solid #857100',
+    cursor: 'pointer',
+  },
 })
 
 function renderActionButton(
@@ -99,6 +110,9 @@ export default function sidebar(state: IState, actions: Actions) {
     <div class=${css(style.main)}>
       <h2>Turn: ${epoch} (${currenFaction.name})</h2>
       ${cellInfo}
+      <div class=${css(style.endTurnButton)} onclick=${actions.endTurn}>
+        End Turn
+      </div>
     </div>
   `
 }
