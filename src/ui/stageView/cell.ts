@@ -44,8 +44,11 @@ const style = StyleSheet.create({
   selected: {
     fill: 'red',
   },
-  targeted: {
+  actionTargeted: {
     fill: 'yellow',
+  },
+  walkTargeted: {
+    fill: 'brown',
   },
 })
 
@@ -62,12 +65,17 @@ export default function cell(cell: ICell, state: IState, actions: Actions) {
   if (selectedCell && pos.toString() ===  selectedCell.pos.toString()) {
     selected = true
   }
-  const targeted = targets && targets[pos.toString()] ? true : false
+  let targetStyle
+  if (targets && targets[pos.toString()]) {
+    targetStyle = state.selectedAction
+      ? style.actionTargeted
+      : style.walkTargeted
+  }
 
   const polygonClass = css(
     style.main,
     selected && style.selected,
-    targeted && style.targeted,
+    targetStyle,
   )
 
   return html`

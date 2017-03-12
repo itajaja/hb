@@ -93,11 +93,14 @@ export default class Unit extends Thing {
 
   move(to: Hex) {
     this.game.moveThing(this, to)
+    this.mp -= to.distance(this.pos)
     this.pos = to
-    this.mp = this.type.mp - to.distance(this.pos)
   }
 
   moveTargets(): Hex[] {
+    if (this.mp <= 0) {
+      return []
+    }
     return this.pos.range(this.mp, 1)
       .filter(this.game.map.isIn)
       .map(this.game.map.cellAt)
@@ -105,7 +108,7 @@ export default class Unit extends Thing {
       .map(c => c.pos)
   }
 
-  canWalkOn(cell: ICell) {
+  canWalkOn = (cell: ICell) => {
     if (cell.thing && cell.thing instanceof Unit) {
       return false
     }
