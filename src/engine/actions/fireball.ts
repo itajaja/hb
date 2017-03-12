@@ -31,6 +31,9 @@ export default class Fireball extends UnitAction {
       let target = pos.neighbor(dir)
       while (this.game.map.isIn(target) && target.distance(pos) < this.range) {
         targets.push(target)
+        if (this.game.map.cellAt(target).thing) {
+          break
+        }
         target = target.neighbor(dir)
       }
     }
