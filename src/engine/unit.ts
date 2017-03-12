@@ -78,6 +78,7 @@ export default class Unit extends Thing {
       this.hp = Math.min(this.type.hp, this.hp + heal)
       return
     }
+    this.game.emit('takeDamage', this)
     // damage
     if (this.state === UnitState.Guard) {
       damage--
@@ -132,7 +133,6 @@ export default class Unit extends Thing {
       // TODO apply state
 
       this.stateExpiration--
-      console.log(this.state, this.stateExpiration)
 
       if (this.stateExpiration === 0) {
         this.state = UnitState.Normal

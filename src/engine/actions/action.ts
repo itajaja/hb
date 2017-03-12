@@ -30,7 +30,9 @@ export class UnitAction implements IAction {
 
   execute(target: Hex): IActionResult {
     this.unit.actionPerformed = true
-    return this.performAction(target)
+    const result = this.performAction(target)
+    this.game.emit('performAction', this)
+    return result
   }
 
   performAction(target: Hex): IActionResult {

@@ -1,3 +1,4 @@
+import assert from './assert'
 import Faction from './faction'
 import Hex from './hex'
 import { IMap } from './map'
@@ -22,6 +23,8 @@ export default class Game {
   things: Map<string, IThing> = new Map()
 
   map: IMap
+
+  private subs: {[idx: string]: Array<(payload) => void>} = {}
 
   constructor({ factions, map }: IGameConfig) {
     this.map = map
@@ -99,5 +102,22 @@ export default class Game {
     }
 
     this.prepareFactionTurn(this.currenFaction)
+  }
+
+  // event handling
+  emit(eventName: string, payload) {
+    const subs = this.subs[eventName] || []
+    subs.forEach(cb => cb(payload))
+  }
+
+  listen(eventName: string, cb: (payload) => void) {
+    this.subs[eventName] = this.subs[eventName] || []
+    this.subs[eventName].push(cb)
+
+    return () => {
+      const index = this.subs[eventName].indexOf(cb)
+      assert(index >= 0, 'the element should be there')
+      this.subs[eventName].splice(index, 1)
+    }
   }
 }

@@ -19,6 +19,7 @@
     "typescript": "^2.2.1"
   },
   "dependencies": {
+    "animejs": "^2.0.1",
     "aphrodite": "^1.1.0",
     "choo": "^4.1.0"
   }
