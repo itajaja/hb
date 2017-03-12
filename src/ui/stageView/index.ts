@@ -30,6 +30,8 @@ export interface IState {
   selectedCell?: ICell
   selectedAction?: IAction
   targets: {[idx: string]: Hex}
+  mapCoords: { x: number, y: number },
+  zoomFactor: number,
 }
 
 export class Actions extends BaseActions<IState> {
@@ -79,15 +81,53 @@ export class Actions extends BaseActions<IState> {
 }
 
 app.model<IState>({
-  state: { game, targets: {} },
+  state: { game, targets: {}, mapCoords: { x: 0, y: 0}, zoomFactor: 0 },
   reducers: {
     all: (prev, state: IState) => state,
+    moveMap: (prev: IState, [x, y]: number[]) => {
+      return {
+        ...prev,
+        mapCoords: {
+          x: prev.mapCoords.x + x,
+          y: prev.mapCoords.y + y,
+        },
+      }
+    },
+    zoomMap: (prev: IState, factor: number) => {
+      return { ...prev, zoomFactor: prev.zoomFactor + factor}
+    },
+  },
+  subscriptions: {
+    subs: send => {
+      let lastPageX: number | null
+      let lastPageY: number | null
+      document.onmousewheel = e => {
+        e.preventDefault()
+        send('zoomMap', e.deltaY * 5, () => {/* */})
+      }
+      document.onmousemove = e => {
+        e.preventDefault()
+        if (e.buttons) {
+          lastPageX = lastPageX || e.pageX
+          lastPageY = lastPageY || e.pageY
+          const deltaX = lastPageX - e.pageX
+          const deltaY = lastPageY - e.pageY
+          send('moveMap', [deltaX, deltaY], () => {/* */})
+          lastPageX = e.pageX
+          lastPageY = e.pageY
+        } else {
+          lastPageX = null
+          lastPageY = null
+        }
+      }
+    },
   },
 })
 
 export default (function stageView(state, prev, send) {
-  const vbFrom = -defaultViewBoxSize / 2
-  const vbSize = defaultViewBoxSize
+  const vbSize = defaultViewBoxSize + state.zoomFactor
+  const vbx = -(vbSize - state.mapCoords.x) / 2
+  const vby = -(vbSize - state.mapCoords.y) / 2
 
   const actions = new Actions(state, send)
   const cells = game.map.cells.map(c => cell(c, state, actions))
@@ -95,7 +135,7 @@ export default (function stageView(state, prev, send) {
   return html`
     <div class=${css(style.main)}>
       ${sidebar(state, actions)}
-      <svg viewBox=${`${vbFrom} ${vbFrom} ${vbSize} ${vbSize}`}>
+      <svg viewBox=${`${vbx} ${vby} ${vbSize} ${vbSize}`}>
         <g>
           ${cells}
         </g>
