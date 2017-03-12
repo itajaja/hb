@@ -6,12 +6,14 @@ export default class RangedAttack extends UnitAction {
   name = 'Ranged Attack'
   description = 'Throw a ranged attack that reaches distant enemies'
 
-  damage = 2
+  params = {
+    damage: 2,
+  }
 
   performAction(target: Hex) {
     const targetUnit = this.game.map.cellAt(target).thing
     if (targetUnit instanceof Unit) {
-      targetUnit.takeDamage(this.damage)
+      targetUnit.takeDamage(this.params.damage)
     }
 
     return {}

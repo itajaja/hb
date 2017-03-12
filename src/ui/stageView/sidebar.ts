@@ -3,7 +3,7 @@ import * as html from 'choo/html'
 
 import { UnitAction } from '../../engine/actions/action'
 import { Terrain } from '../../engine/map'
-import Unit from '../../engine/unit'
+import Unit, { UnitState } from '../../engine/unit'
 import { Actions, IState } from './index'
 
 const style = StyleSheet.create({
@@ -51,22 +51,39 @@ export default function sidebar(state: IState, actions: Actions) {
     let unitInfo
     if (selectedCell.thing && selectedCell.thing instanceof Unit) {
       const unit = selectedCell.thing
+      const selectedAction = unit.actions.find(a => a === state.selectedAction)
       let unitActions
+      let selectedActionDescription
 
-      if (currenFaction.id === unit.faction.id) {
+      if (
+        currenFaction.id === unit.faction.id &&
+        unit.canPerformAction
+      ) {
         unitActions = unit.actions
           .map(a => renderActionButton(a, state, actions))
+      }
+      if (selectedAction) {
+        selectedActionDescription = html`<div>
+          ${selectedAction.description}
+          <br>
+          ${Object.keys(selectedAction.params).map(i =>
+            html`<div>${i}: ${selectedAction.params[i]}</div>`,
+          )}
+        </div>`
       }
 
       unitInfo = html`
         <p>
           Unit: ${unit.type.name}
           <br>
+          Satus: ${UnitState[unit.state]}
+          <br>
           hp: ${unit.hp}/${unit.type.hp}
           <br>
           mp: ${unit.mp}/${unit.type.mp}
           <br>
           ${unitActions}
+          ${selectedActionDescription}
         </p>
       `
     }

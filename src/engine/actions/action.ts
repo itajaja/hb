@@ -24,6 +24,8 @@ export class UnitAction implements IAction {
   name: string
   description: string
 
+  params: object = {}
+
   constructor(public game: Game, public unit: Unit) {}
 
   execute(target: Hex): IActionResult {

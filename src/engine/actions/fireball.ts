@@ -8,13 +8,15 @@ export default class Fireball extends UnitAction {
   'cells. It can be placed only on visible cells liying on straight ' +
   'lines from the caster'
 
-  damage = 3
+  params = {
+    damage: 3,
+  }
   range = 6
 
   performAction(target) {
     this.game.map.thingsInRange(target, 1).forEach(t => {
       if (t instanceof Unit) {
-        t.takeDamage(this.damage)
+        t.takeDamage(this.params.damage)
       }
     })
 

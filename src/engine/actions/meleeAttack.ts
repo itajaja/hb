@@ -6,12 +6,14 @@ export default class MeleeAttack extends UnitAction {
   name = 'Melee Attack'
   description = 'deals damage to adjacent unit'
 
-  damage = 3
+  params = {
+    damage: 3,
+  }
 
   performAction(target: Hex) {
     const targetUnit = this.game.map.cellAt(target).thing
     if (targetUnit instanceof Unit) {
-      targetUnit.takeDamage(this.damage)
+      targetUnit.takeDamage(this.params.damage)
     }
 
     return {}
