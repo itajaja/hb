@@ -33,7 +33,17 @@ export interface IState {
 
 export class Actions extends BaseActions<IState> {
   selectCell = (selectedCell: ICell) => {
-    this.perform({ selectedCell, selectedAction: undefined })
+    const { pos } = selectedCell
+    if (this.state.targets && this.state.targets[pos.toString()] ) {
+      this.state.selectedAction!.execute(pos)
+      this.perform({ selectedAction: undefined, targets: undefined })
+    } else {
+      this.perform({
+        selectedCell,
+        selectedAction: undefined,
+        targets: undefined,
+      })
+    }
   }
   selectAction = (selectedAction: IAction) => {
     const targets = {}
