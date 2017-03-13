@@ -69,7 +69,7 @@ export default class Unit extends React.Component<IProps, {}> {
     const barProps = { x: -10, height: 2, width: 20, c1: 'black' }
 
     return (
-      <g>
+      <g ref="main">
         <text
           className={css(styles.main)}
           fontSize="10"

@@ -6,6 +6,7 @@ import Game from '../../engine/game'
 import Hex from '../../engine/hex'
 import { ICell } from '../../engine/map'
 import { createNewTestGame } from '../../newGame'
+import Layout from '../components/layout'
 import style from '../utils/style'
 import Cell from './cell'
 import Sidebar from './sidebar'
@@ -18,6 +19,10 @@ const styles = StyleSheet.create({
     background: style.darkGrey,
     color: style.white,
     position: 'relative',
+  },
+  mapContainer: {
+    flex: 1,
+    overflow: 'auto',
   },
 })
 
@@ -47,16 +52,18 @@ export default class Stageview extends React.Component<{}, IState> {
 
   render() {
     return (
-      <div className={css(styles.main)}>
+      <Layout extraStyle={[styles.main]} direction="row">
+        <div className={css(styles.mapContainer)}>
+          <svg ref="map">
+            <g>
+              ${game.map.cells.map(c =>
+                <Cell store={this.store} cell={c} key={c.pos.toString()}/>,
+              )}
+            </g>
+          </svg>
+        </div>
         <Sidebar store={this.store} />
-        <svg ref="map">
-          <g>
-            ${game.map.cells.map(c =>
-              <Cell store={this.store} cell={c} key={c.pos.toString()}/>,
-            )}
-          </g>
-        </svg>
-      </div>
+      </Layout>
     )
 
   }

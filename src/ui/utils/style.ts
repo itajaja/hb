@@ -1,7 +1,7 @@
 export default {
   // colors
   darkGrey: '#27272A',
-  white: 'white',
-  darkGreen: '#303e45',
+  white: '#A79191',
+  darkGreen: '#303E45',
   gold: '#857100',
 }

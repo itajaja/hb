@@ -4,33 +4,30 @@ import * as React from 'react'
 import { UnitAction } from '../../engine/actions/action'
 import { Terrain } from '../../engine/map'
 import Unit, { UnitState } from '../../engine/unit'
+import Layout from '../components/layout'
 import style from '../utils/style'
 import Store from './store'
 
 const styles = StyleSheet.create({
   main: {
-    position: 'fixed',
-    right: 0,
     background: style.darkGreen,
     borderLeft: `3px solid ${style.gold}`,
-    padding: 10,
-    top: 0,
-    bottom: 0,
     width: 400,
   },
+  container: {
+    padding: 10,
+  },
   button: {
-    padding: 3,
+    padding: 10,
+    margin: '10px 0',
     border: `1px solid ${style.gold}`,
     cursor: 'pointer',
+    display: 'inline-block',
   },
   selectedAction: {
     background: style.gold,
   },
   endTurnButton: {
-    position: 'absolute',
-    bottom: 0,
-    left: 0,
-    right: 0,
     padding: 20,
     textAlign: 'center',
     background: style.darkGrey,
@@ -44,6 +41,7 @@ function renderActionButton(action: UnitAction, store: Store) {
 
   return (
     <span
+      key={action.name}
       onClick={() => store.selectAction(action)}
       className={css(selectedAction && styles.selectedAction, styles.button)}
     >
@@ -82,14 +80,14 @@ export default function Sidebar({ store }: IProps) {
             {selectedAction.description}
             <br />
             {Object.keys(selectedAction.params).map(i =>
-              <div>{i}: {selectedAction.params[i]}</div>,
+              <div key={i}>{i}: {selectedAction.params[i]}</div>,
             )}
           </div>
         )
       }
 
       unitInfo = (
-        <p>
+        <div>
           Unit: {unit.type.name}
           <br />
           Satus: {UnitState[unit.state]}
@@ -97,10 +95,11 @@ export default function Sidebar({ store }: IProps) {
           hp: {unit.hp}/{unit.type.hp}
           <br />
           mp: {unit.mp}/{unit.type.mp}
-          <br />
-          {unitActions}
+          <div>
+            {unitActions}
+          </div>
           {selectedActionDescription}
-        </p>
+        </div>
       )
     }
     cellInfo = (
@@ -112,12 +111,15 @@ export default function Sidebar({ store }: IProps) {
   }
 
   return (
-    <div className={css(styles.main)}>
-      <h2>Turn: {epoch} ({currenFaction.name})</h2>
-      {cellInfo}
+    <Layout extraStyle={[styles.main]}>
+      <div className={css(styles.container)}>
+        <h2>Turn: {epoch} ({currenFaction.name})</h2>
+        {cellInfo}
+      </div>
+      <Layout grow />
       <div className={css(styles.endTurnButton)} onClick={store.endTurn}>
         End Turn
       </div>
-    </div>
+    </Layout>
   )
 }
