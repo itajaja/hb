@@ -2,6 +2,7 @@
   "compilerOptions": {
     "target": "es5",
     "outDir": "lib",
+    "jsx": "react",
     "strictNullChecks": true,
     "sourceMap": true,
     "noUnusedLocals": true,

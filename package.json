@@ -3,24 +3,31 @@
   "version": "0.0.1",
   "description": "",
   "scripts": {
-    "build": "npm run types && tsc",
+    "build": "tsc",
+    "dev-server": "DEV_SERVER=true webpack-dev-server --hot --inline --progress",
     "lint": "tslint --project tsconfig.json",
-    "start": "bankai lib/index.js -d -p 8080",
-    "test": "npm run lint && npm run build",
-    "types": "cp -r typings/* node_modules/@types",
-    "postinstall": "npm run types"
+    "start": "npm run dev-server",
+    "test": "npm run lint && npm run build"
   },
   "author": "Giacomo Tagliabue",
   "license": "MIT",
   "devDependencies": {
     "@types/aphrodite": "^0.5.5",
-    "bankai": "^5.4.0",
+    "@types/react": "^15.0.16",
+    "@types/react-dom": "^0.14.23",
+    "html-webpack-plugin": "^2.28.0",
+    "source-map-loader": "^0.2.0",
+    "ts-loader": "^2.0.1",
     "tslint": "^4.5.1",
-    "typescript": "^2.2.1"
+    "typescript": "^2.2.1",
+    "webpack": "^2.2.1",
+    "webpack-dev-server": "^2.4.1",
+    "webpack-merge": "^4.0.0"
   },
   "dependencies": {
     "animejs": "^2.0.1",
     "aphrodite": "^1.1.0",
-    "choo": "^4.1.0"
+    "react": "^15.4.2",
+    "react-dom": "^15.4.2"
   }
 }
