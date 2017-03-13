@@ -6,16 +6,17 @@ import Game from '../../engine/game'
 import Hex from '../../engine/hex'
 import { ICell } from '../../engine/map'
 import { createNewTestGame } from '../../newGame'
+import style from '../utils/style'
 import Cell from './cell'
 import Sidebar from './sidebar'
 import Store from './store'
 
 const game = createNewTestGame()
 
-const style = StyleSheet.create({
+const styles = StyleSheet.create({
   main: {
-    background: '#27272A',
-    color: 'white',
+    background: style.darkGrey,
+    color: style.white,
     position: 'relative',
   },
 })
@@ -46,7 +47,7 @@ export default class Stageview extends React.Component<{}, IState> {
 
   render() {
     return (
-      <div className={css(style.main)}>
+      <div className={css(styles.main)}>
         <Sidebar store={this.store} />
         <svg ref="map">
           <g>

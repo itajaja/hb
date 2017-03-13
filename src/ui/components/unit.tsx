@@ -1,6 +1,6 @@
 import * as anime from 'animejs'
 import { css, StyleSheet } from 'aphrodite'
-import * as React from 'React'
+import * as React from 'react'
 
 import { UnitAction } from '../../engine/actions/action'
 import EUnit from '../../engine/unit'

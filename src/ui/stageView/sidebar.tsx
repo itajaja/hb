@@ -4,14 +4,15 @@ import * as React from 'react'
 import { UnitAction } from '../../engine/actions/action'
 import { Terrain } from '../../engine/map'
 import Unit, { UnitState } from '../../engine/unit'
+import style from '../utils/style'
 import Store from './store'
 
 const styles = StyleSheet.create({
   main: {
     position: 'fixed',
     right: 0,
-    background: 'rgb(48, 62, 69)',
-    borderLeft: '3px solid rgb(133, 113, 0)',
+    background: style.darkGreen,
+    borderLeft: `3px solid ${style.gold}`,
     padding: 10,
     top: 0,
     bottom: 0,
@@ -19,11 +20,11 @@ const styles = StyleSheet.create({
   },
   button: {
     padding: 3,
-    border: '1px solid rgb(133, 113, 0)',
+    border: `1px solid ${style.gold}`,
     cursor: 'pointer',
   },
   selectedAction: {
-    background: 'rgb(133, 113, 0)',
+    background: style.gold,
   },
   endTurnButton: {
     position: 'absolute',
@@ -32,8 +33,8 @@ const styles = StyleSheet.create({
     right: 0,
     padding: 20,
     textAlign: 'center',
-    background: '#27272a',
-    borderTop: '2px solid #857100',
+    background: style.darkGrey,
+    borderTop: `2px solid ${style.gold}`,
     cursor: 'pointer',
   },
 })

@@ -1,9 +1,10 @@
 import { css, StyleSheet } from 'aphrodite'
+import * as React from 'react'
 
-import * as React from 'React'
 import { ICell } from '../../engine/map'
 import EUnit from '../../engine/unit'
 import Unit from '../components/unit'
+import style from '../utils/style'
 import Store from './store'
 
 export const cellSize = 20
@@ -42,7 +43,8 @@ const styles = StyleSheet.create({
   },
 
   selected: {
-    fill: 'red',
+    stroke: style.gold,
+    strokeWidth: '.5px',
   },
   actionTargeted: {
     fill: 'yellow',
