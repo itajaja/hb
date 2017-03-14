@@ -41,7 +41,7 @@ export default class Game {
     return Array.from(this.factions.values())[this.currentFactionIndex]
   }
 
-  get factionUnits() {
+  get factionUnits(): {[idx: string]: Unit[]} {
     const units: {[idx: string]: Unit[]} = {}
 
     this.factions.forEach(f => units[f.id] = [])

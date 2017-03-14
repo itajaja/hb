@@ -1,3 +1,4 @@
+import Opponent from '../../ai/opponent'
 import { IAction } from '../../engine/actions/action'
 import Hex from '../../engine/hex'
 import { ICell } from '../../engine/map'
@@ -24,13 +25,13 @@ export default class Store extends BaseStore<IState> {
       } else { // if there is no action, it's move
         (prevCell!.thing! as Unit).move(pos)
       }
-      this.perform({
+      this.set({
         selectedAction: undefined,
         targets: undefined,
         selectedCell: undefined,
       })
     } else {
-      this.perform({
+      this.set({
         selectedCell,
         selectedAction: undefined,
         targets,
@@ -41,16 +42,22 @@ export default class Store extends BaseStore<IState> {
   selectAction = (selectedAction: IAction) => {
     const targets = {}
     selectedAction.targets().forEach(h => targets[h.toString()] = h)
-    this.perform({ selectedAction, targets })
+    this.set({ selectedAction, targets })
   }
 
-  endTurn = () => {
-    this.state.game.endTurn()
-    this.perform({
+  endTurn = async () => {
+    const { game } = this.state
+    game.endTurn()
+    this.set({
       selectedAction: undefined,
       targets: undefined,
       selectedCell: undefined,
     })
-  }
 
+    const currentFactionId = game.currenFaction.id
+    if (currentFactionId !== this.state.playerFaction) {
+      const opponent = new Opponent(this)
+      await opponent.performTurn()
+    }
+  }
 }

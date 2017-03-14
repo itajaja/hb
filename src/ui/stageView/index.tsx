@@ -28,6 +28,7 @@ export interface IProps {
 }
 
 export interface IState {
+  playerFaction: string
   game: Game,
   selectedCell?: ICell
   selectedAction?: IAction
@@ -39,8 +40,12 @@ export default class Stageview extends React.Component<IProps, IState> {
 
   constructor(props) {
     super(props)
+    const { game } = this.props
+    // The player faction is the first one, the rest are AIs
+    const playerFaction = Array.from(game.factions.keys())[0]
+
     this.store = new Store(this)
-    this.state = { game: this.props.game, targets: {} }
+    this.state = { game: this.props.game, targets: {}, playerFaction }
   }
 
   componentDidMount() {
