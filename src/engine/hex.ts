@@ -43,7 +43,7 @@ export default class Hex {
 
   distance(from: Hex) {
      const sub = this.sub(from)
-     return Math.max(Math.abs(sub.q), Math.abs(sub.r), Math.abs(sub.r))
+     return Math.max(Math.abs(sub.q), Math.abs(sub.r), Math.abs(sub.s))
   }
 
   circle(radius: number) {
