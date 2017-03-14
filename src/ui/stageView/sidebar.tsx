@@ -104,7 +104,10 @@ export default function Sidebar({ store }: IProps) {
     }
     cellInfo = (
       <div>
-        <p>terrain type: {Terrain[selectedCell.terrain]}</p>
+        <p>
+          {selectedCell.pos.toString()} -
+          terrain type: {Terrain[selectedCell.terrain]}
+        </p>
         {unitInfo}
       </div>
     )

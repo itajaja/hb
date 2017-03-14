@@ -5,19 +5,16 @@ import { IAction } from '../../engine/actions/action'
 import Game from '../../engine/game'
 import Hex from '../../engine/hex'
 import { ICell } from '../../engine/map'
-import { createNewTestGame } from '../../newGame'
 import Layout from '../components/layout'
 import style from '../utils/style'
 import Cell from './cell'
 import Sidebar from './sidebar'
 import Store from './store'
 
-const game = createNewTestGame()
-
 const styles = StyleSheet.create({
   main: {
     background: style.darkGrey,
-    color: style.white,
+    color: style.textColor,
     position: 'relative',
   },
   mapContainer: {
@@ -26,6 +23,10 @@ const styles = StyleSheet.create({
   },
 })
 
+export interface IProps {
+  game: Game,
+}
+
 export interface IState {
   game: Game,
   selectedCell?: ICell
@@ -33,13 +34,13 @@ export interface IState {
   targets: { [idx: string]: Hex }
 }
 
-export default class Stageview extends React.Component<{}, IState> {
+export default class Stageview extends React.Component<IProps, IState> {
   store: Store
 
   constructor(props) {
     super(props)
     this.store = new Store(this)
-    this.state = { game, targets: {} }
+    this.state = { game: this.props.game, targets: {} }
   }
 
   componentDidMount() {
@@ -56,7 +57,7 @@ export default class Stageview extends React.Component<{}, IState> {
         <div className={css(styles.mapContainer)}>
           <svg ref="map">
             <g>
-              ${game.map.cells.map(c =>
+              ${this.state.game.map.cells.map(c =>
                 <Cell store={this.store} cell={c} key={c.pos.toString()}/>,
               )}
             </g>

@@ -1,7 +1,7 @@
 import { css, StyleSheet } from 'aphrodite'
 import * as React from 'react'
 
-import { ICell } from '../../engine/map'
+import { ICell, Terrain } from '../../engine/map'
 import EUnit from '../../engine/unit'
 import Unit from '../components/unit'
 import style from '../utils/style'
@@ -23,34 +23,46 @@ function hexCorner(x, y, size, i) {
 }
 
 const HEX_POINTS = [0, 1, 2, 3, 4, 5]
-  .map(i => hexCorner(0, 0, cellSize, i))
+  .map(i => hexCorner(0, 0, cellSize - .1, i))
+  .join(' ')
+const INNER_HEX_POINTS = [0, 1, 2, 3, 4, 5]
+  .map(i => hexCorner(0, 0, cellSize - 1, i))
   .join(' ')
 
 const styles = StyleSheet.create({
-  main: {
+  terrain: {
     cursor: 'pointer',
     stroke: 'white',
-    margin: '1px',
-    strokeWidth: '.1px',
-    fillRule: 'evenodd',
-    fill: 'transparent',
-    fillOpacity: .1,
+    strokeWidth: .1,
     transition: '.1s ease-in-out all',
+  },
+
+  targetOverlay: {
+    fill: 'transparent',
 
     ':hover': {
-      stroke: 'green',
+      stroke: 'rgba(0, 0, 0, 0.3)',
     },
   },
+})
 
+const terrainStyles = StyleSheet.create({
+  [Terrain.Pit]: { fill: 'transparent' },
+  [Terrain.Ground]: { fill: '#5C4B3D' },
+})
+
+const targetStyles = StyleSheet.create({
   selected: {
     stroke: style.gold,
-    strokeWidth: '.5px',
+    ':hover': {
+      stroke: style.gold,
+    },
   },
   actionTargeted: {
-    fill: 'yellow',
+    fill: 'rgba(255, 0, 0, 0.1)', stroke: 'rgba(255, 0, 0, 0.1)',
   },
   walkTargeted: {
-    fill: 'brown',
+    fill: 'rgba(255, 255, 255, 0.1)', stroke: 'rgba(255, 255, 255, 0.1)',
   },
 })
 
@@ -81,20 +93,27 @@ export default class Cell extends React.Component<IProps, {}> {
     let targetStyle
     if (targets && targets[pos.toString()]) {
       targetStyle = selectedAction
-        ? styles.actionTargeted
-        : styles.walkTargeted
+        ? targetStyles.actionTargeted
+        : targetStyles.walkTargeted
     }
 
-    const polygonClass = css(
-      styles.main,
-      selected && styles.selected,
+    const terrainClass = css(
+      styles.terrain, terrainStyles[cell.terrain],
+    )
+    const overlayClass = css(
+      styles.targetOverlay,
+      selected && targetStyles.selected,
       targetStyle,
     )
 
     return (
       <g transform={translate(x, y)} onClick={this.handleClick}>
+        <polygon className={terrainClass} points={HEX_POINTS}/>
         {thing && thing instanceof EUnit && <Unit unit={thing} />}
-        <polygon className={polygonClass} points={HEX_POINTS} /> 
+        <polygon
+          className={overlayClass}
+          points={INNER_HEX_POINTS}
+        />
       </g>
     )
   }

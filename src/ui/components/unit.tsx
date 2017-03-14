@@ -74,6 +74,10 @@ export default class Unit extends React.Component<IProps, {}> {
           className={css(styles.main)}
           fontSize="10"
           fill={unit.faction.color}
+          style={{
+            // tslint:disable-next-line:max-line-length
+            textShadow: `black 0 0 5px, ${unit.faction.color} 0 0 10em, ${unit.faction.color} 0 0 10em`,
+          }}
         >
           {unitGlyphs[unit.type.name]}
         </text>
