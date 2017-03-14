@@ -24,6 +24,8 @@ export interface IMap {
   cellAt(hex: Hex): ICell
 
   thingsInRange(hex: Hex, radius: number): IThing[]
+
+  flood(hex: Hex, range: number, predicate: (cell: ICell) => boolean): ICell[]
 }
 
 /**
@@ -66,6 +68,30 @@ export default class HexMap implements IMap {
 
   get cells() {
     return CENTER.range(this.size).map(this.cellAt)
+  }
+
+  flood(hex: Hex, range: number, predicate: (cell: ICell) => boolean): ICell[] {
+    const bag = new Set<ICell>()
+    const toProcess: Array<[Hex, number]> = [[hex, 0]]
+
+    while (toProcess.length > 0) {
+      const [curCell, distance] = toProcess.splice(0, 1)[0]
+      if (distance >= range) {
+        continue
+      }
+      const newCells = curCell.neighbors
+        .filter(this.isIn).map(this.cellAt).filter(predicate)
+
+      newCells.forEach(c => {
+        if (bag.has(c)) {
+          return
+        } else {
+          bag.add(c)
+          toProcess.push([c.pos, distance + 1])
+        }
+      })
+    }
+    return Array.from(bag)
   }
 
   thingsInRange(hex: Hex, radius: number): IThing[] {

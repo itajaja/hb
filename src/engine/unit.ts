@@ -102,11 +102,12 @@ export default class Unit extends Thing {
     if (this.mp <= 0) {
       return []
     }
-    return this.pos.range(this.mp, 1)
-      .filter(this.game.map.isIn)
-      .map(this.game.map.cellAt)
-      .filter(this.canWalkOn)
-      .map(c => c.pos)
+
+    return this.game.map.flood(
+      this.pos,
+      this.mp,
+      this.canWalkOn,
+    ).map(c => c.pos)
   }
 
   canWalkOn = (cell: ICell) => {
