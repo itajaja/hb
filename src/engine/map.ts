@@ -25,7 +25,17 @@ export interface IMap {
 
   thingsInRange(hex: Hex, radius: number): IThing[]
 
-  flood(hex: Hex, range: number, predicate: (cell: ICell) => boolean): ICell[]
+  /**
+   * returns the flooded paths
+   * @param from the starting position
+   * @param stop determines when to stop the flooding
+   * @param predicate determines if a cell can be flooded
+   */
+  flood(
+    from: Hex,
+    stop: (cell: ICell, distance: number, path: Hex[]) => boolean,
+    predicate: (cell: ICell) => boolean,
+  ): Array<[ICell, number, Hex[]]>
 }
 
 /**
@@ -70,14 +80,18 @@ export default class HexMap implements IMap {
     return CENTER.range(this.size).map(this.cellAt)
   }
 
-  flood(hex: Hex, range: number, predicate: (cell: ICell) => boolean): ICell[] {
-    const bag = new Set<ICell>()
-    const toProcess: Array<[Hex, number]> = [[hex, 0]]
+  flood(
+    from: Hex,
+    stop: (cell: ICell, distance: number, path: Hex[]) => boolean,
+    predicate: (cell: ICell) => boolean,
+  ): Array<[ICell, number, Hex[]]> {
+    const bag = new Map<ICell, [ICell, number, Hex[]]>()
+    const toProcess: Array<[Hex, number, Hex[]]> = [[from, 0, []]]
 
     while (toProcess.length > 0) {
-      const [curCell, distance] = toProcess.splice(0, 1)[0]
-      if (distance >= range) {
-        continue
+      const [curCell, distance, path] = toProcess.splice(0, 1)[0]
+      if (stop(this.cellAt(curCell), distance, path)) {
+        return Array.from(bag.values())
       }
       const newCells = curCell.neighbors
         .filter(this.isIn).map(this.cellAt).filter(predicate)
@@ -86,12 +100,14 @@ export default class HexMap implements IMap {
         if (bag.has(c)) {
           return
         } else {
-          bag.add(c)
-          toProcess.push([c.pos, distance + 1])
+          bag.set(c, [c, distance + 1, path])
+          const newPath = [...path, c.pos]
+          toProcess.push([c.pos, distance + 1, newPath])
         }
       })
     }
-    return Array.from(bag)
+
+    return Array.from(bag.values())
   }
 
   thingsInRange(hex: Hex, radius: number): IThing[] {

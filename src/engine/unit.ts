@@ -105,9 +105,9 @@ export default class Unit extends Thing {
 
     return this.game.map.flood(
       this.pos,
-      this.mp,
+      (_, d) => d > this.mp,
       this.canWalkOn,
-    ).map(c => c.pos)
+    ).map(([c]) => c.pos)
   }
 
   canWalkOn = (cell: ICell) => {
