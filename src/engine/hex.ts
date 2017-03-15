@@ -37,6 +37,10 @@ export default class Hex {
     return this.add(dir)
   }
 
+  isNeighbor(x: Hex) {
+    return this.neighbors.some(n => n.toString() === x.toString())
+  }
+
   get neighbors() {
     return directions.map(d => this.add(d))
   }

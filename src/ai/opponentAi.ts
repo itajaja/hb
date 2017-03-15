@@ -11,7 +11,13 @@ import unitAis from './unitAi'
 export default class OpponentAi {
   constructor(private store: Store) { }
 
-  hasCellOpponentUnit = (c: ICell) => {
+  hasCellFriendlyUnit = (c: ICell) => {
+    return c.thing && c.thing instanceof Unit
+      ? c.thing.factionId === this.store.state.game.currenFaction.id
+      : false
+  }
+
+  hasCellEnemyUnit = (c: ICell) => {
     return c.thing && c.thing instanceof Unit
       ? c.thing.factionId === this.store.state.playerFaction
       : false
@@ -24,10 +30,10 @@ export default class OpponentAi {
     }
   }
 
-  isCellNearOpponentUnit = (c: ICell): boolean => {
+  isCellNearEnemyUnit = (c: ICell): boolean => {
     const { map } = this.store.state.game
     return c.pos.neighbors.filter(map.isIn).map(map.cellAt)
-      .some(this.hasCellOpponentUnit)
+      .some(this.hasCellEnemyUnit)
   }
 
   tryExecuteUnitAction(unit: Unit, action: (() => void) | null) {
