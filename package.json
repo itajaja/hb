@@ -3,11 +3,12 @@
   "version": "0.0.1",
   "description": "",
   "scripts": {
-    "build": "tsc",
+    "build": "npm run webpack",
     "dev-server": "DEV_SERVER=true webpack-dev-server --hot --inline --progress",
     "lint": "tslint --project tsconfig.json",
     "start": "npm run dev-server",
-    "test": "npm run lint && npm run build"
+    "test": "npm run lint && npm run build",
+    "webpack": "NODE_ENV=production webpack -p --progress"
   },
   "author": "Giacomo Tagliabue",
   "license": "MIT",

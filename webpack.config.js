@@ -1,4 +1,5 @@
 const HtmlWebpackPlugin = require('html-webpack-plugin');
+const path = require('path')
 const merge = require('webpack-merge');
 const webpack = require('webpack');
 
@@ -6,11 +7,11 @@ const TARGET = process.env.NODE_ENV;
 const PRODUCTION = TARGET === 'production';
 const DEVELOPMENT = TARGET === 'development' || !TARGET;
 
-const config = {
+let config = {
   entry: './src/index.tsx',
 
   output: {
-    path: '/build',
+    path: path.resolve('./build'),
     publicPath: '/static/',
     filename: 'bundle.js',
   },
