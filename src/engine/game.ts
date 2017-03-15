@@ -72,13 +72,23 @@ export default class Game {
   }
 
   /**
-   * returns true if game over
+   * returns the id of the winning faction, if there is one
    */
-  checkGameOver() {
-    const units = this.factionUnits
+  checkGameOver(): string | undefined {
+    const factionUnits = this.factionUnits
 
     // checks if there are some factions with 0 units
-    return Object.keys(units).map(k => units[k].length).some(u => u === 0)
+    let winningFaction: string | undefined
+    for (const factionId of Object.keys(factionUnits)) {
+      if (factionUnits[factionId].length > 0) {
+        if (winningFaction) {
+          return // there is no winner yet
+        }
+        winningFaction = factionId
+      }
+    }
+
+    return winningFaction
   }
 
   finishEpoch() {

@@ -1,7 +1,13 @@
-export default {
-  // colors
+const colors = {
   darkGrey: '#27272A',
-  textColor: '#A79191',
+  pink: '#A79191',
   darkGreen: '#303E45',
   gold: '#857100',
+}
+
+export default {
+  ...colors,
+
+  textColor: colors.pink,
+  border: `10px double ${colors.gold}`,
 }

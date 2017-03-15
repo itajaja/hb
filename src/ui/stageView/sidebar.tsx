@@ -11,7 +11,7 @@ import Store from './store'
 const styles = StyleSheet.create({
   main: {
     background: style.darkGreen,
-    borderLeft: `3px solid ${style.gold}`,
+    borderLeft: style.border,
     width: 400,
   },
   container: {
@@ -31,7 +31,7 @@ const styles = StyleSheet.create({
     padding: 20,
     textAlign: 'center',
     background: style.darkGrey,
-    borderTop: `2px solid ${style.gold}`,
+    borderTop: style.border,
     cursor: 'pointer',
   },
 })

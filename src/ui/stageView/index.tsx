@@ -10,6 +10,7 @@ import style from '../utils/style'
 import Cell from './cell'
 import Sidebar from './sidebar'
 import Store from './store'
+import Dialog from "../components/Dialog";
 
 const styles = StyleSheet.create({
   main: {
@@ -56,14 +57,39 @@ export default class Stageview extends React.Component<IProps, IState> {
     )
   }
 
+  renderGameOver(winningFaction: string) {
+    const playerWon = winningFaction === this.state.playerFaction
+    const onClick = playerWon ? this.props.onWin : this.props.onLose
+
+    return (
+      <Dialog>
+        <Dialog.Title>GAME OVER</Dialog.Title>
+        <Dialog.Content>
+          {playerWon ? 'YOU WON' : 'YOU LOST'}
+        </Dialog.Content>
+        <Dialog.Controls>
+          <Dialog.Control onClick={onClick}>OK</Dialog.Control>
+          <Dialog.Control onClick={onClick}>Maybe</Dialog.Control>
+        </Dialog.Controls>
+      </Dialog>
+    )
+  }
+
   render() {
+    const winningFaction = this.state.game.checkGameOver()
+    let dialog
+    if (winningFaction) {
+      dialog = this.renderGameOver(winningFaction)
+    }
+
     return (
       <Layout extraStyle={[styles.main]} direction="row">
+        {dialog}
         <div className={css(styles.mapContainer)}>
           <svg ref="map">
             <g>
               ${this.state.game.map.cells.map(c =>
-                <Cell store={this.store} cell={c} key={c.pos.toString()}/>,
+                <Cell store={this.store} cell={c} key={c.pos.toString()} />,
               )}
             </g>
           </svg>
