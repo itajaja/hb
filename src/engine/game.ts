@@ -1,3 +1,4 @@
+import { debug } from '../utils'
 import assert from './assert'
 import Faction from './faction'
 import Hex from './hex'
@@ -106,6 +107,7 @@ export default class Game {
 
   // event handling
   emit(eventName: string, payload) {
+    debug('game: emitting event', eventName, payload)
     const subs = this.subs[eventName] || []
     subs.forEach(cb => cb(payload))
   }

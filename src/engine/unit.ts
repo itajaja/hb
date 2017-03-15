@@ -1,4 +1,5 @@
 import { UnitAction } from './actions/action'
+import assert from './assert'
 import Game from './game'
 import Hex from './hex'
 import { ICell, Terrain } from './map'
@@ -60,6 +61,13 @@ export default class Unit extends Thing {
     this.actions = type.actions.map(Action => new Action(game, this))
   }
 
+  getAction(actionType: typeof UnitAction): UnitAction {
+    const action = this.actions.find(a => a instanceof actionType)
+
+    assert(action, 'Action not found')
+    return action!
+  }
+
   get faction() {
     return this.game.factions.get(this.factionId)!
   }
@@ -107,7 +115,7 @@ export default class Unit extends Thing {
       this.pos,
       (_, d) => d > this.mp,
       this.canWalkOn,
-    ).map(([c]) => c.pos)
+    ).paths.map(([c]) => c.pos)
   }
 
   canWalkOn = (cell: ICell) => {

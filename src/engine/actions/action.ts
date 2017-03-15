@@ -37,11 +37,11 @@ export class UnitAction implements IAction {
     return result
   }
 
-  performAction(target: Hex): IActionResult {
+  targets(): Hex[] {
     throw Error('Not Implemented')
   }
 
-  targets(): Hex[] {
+  protected performAction(target: Hex): IActionResult {
     throw Error('Not Implemented')
   }
 }

@@ -1,4 +1,4 @@
-import Opponent from '../../ai/opponent'
+import OpponentAi from '../../ai/opponentAi'
 import { IAction } from '../../engine/actions/action'
 import Hex from '../../engine/hex'
 import { ICell } from '../../engine/map'
@@ -56,7 +56,7 @@ export default class Store extends BaseStore<IState> {
 
     const currentFactionId = game.currenFaction.id
     if (currentFactionId !== this.state.playerFaction) {
-      const opponent = new Opponent(this)
+      const opponent = new OpponentAi(this)
       await opponent.performTurn()
     }
   }

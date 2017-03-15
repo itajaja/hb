@@ -16,6 +16,11 @@ export interface ICell {
   terrain: Terrain
 }
 
+interface IFloodResult {
+  paths: Array<[ICell, number, Hex[]]>
+  found?: [ICell, number, Hex[]]
+}
+
 export interface IMap {
   cells: ICell[]
 
@@ -35,7 +40,7 @@ export interface IMap {
     from: Hex,
     stop: (cell: ICell, distance: number, path: Hex[]) => boolean,
     predicate: (cell: ICell) => boolean,
-  ): Array<[ICell, number, Hex[]]>
+  ): IFloodResult
 }
 
 /**
@@ -84,16 +89,20 @@ export default class HexMap implements IMap {
     from: Hex,
     stop: (cell: ICell, distance: number, path: Hex[]) => boolean,
     predicate: (cell: ICell) => boolean,
-  ): Array<[ICell, number, Hex[]]> {
+  ): IFloodResult {
     const bag = new Map<ICell, [ICell, number, Hex[]]>()
     const toProcess: Array<[Hex, number, Hex[]]> = [[from, 0, []]]
 
     while (toProcess.length > 0) {
-      const [curCell, distance, path] = toProcess.splice(0, 1)[0]
-      if (stop(this.cellAt(curCell), distance, path)) {
-        return Array.from(bag.values())
+      const [CurHex, distance, path] = toProcess.splice(0, 1)[0]
+      const curCell = this.cellAt(CurHex)
+      if (stop(curCell, distance + 1, path)) {
+        return {
+          paths: Array.from(bag.values()),
+          found: [curCell, distance, path],
+        }
       }
-      const newCells = curCell.neighbors
+      const newCells = CurHex.neighbors
         .filter(this.isIn).map(this.cellAt).filter(predicate)
 
       newCells.forEach(c => {
@@ -107,7 +116,7 @@ export default class HexMap implements IMap {
       })
     }
 
-    return Array.from(bag.values())
+    return { paths: Array.from(bag.values()) }
   }
 
   thingsInRange(hex: Hex, radius: number): IThing[] {
