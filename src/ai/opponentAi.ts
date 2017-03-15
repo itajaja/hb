@@ -17,6 +17,13 @@ export default class OpponentAi {
       : false
   }
 
+  update() {
+    this.store.set({}) // update state
+    if (this.store.state.game.checkGameOver()) {
+      throw 'GAME_OVER' // tslint:disable-line:no-string-throw
+    }
+  }
+
   isCellNearOpponentUnit = (c: ICell): boolean => {
     const { map } = this.store.state.game
     return c.pos.neighbors.filter(map.isIn).map(map.cellAt)
@@ -24,11 +31,11 @@ export default class OpponentAi {
   }
 
   tryExecuteUnitAction(unit: Unit, action: (() => void) | null) {
-    this.store.set({}) // update state
+    this.update()
     if (action && unit.canPerformAction) {
       action()
     }
-    this.store.set({}) // update state
+    this.update()
   }
 
   moveUnit = (unit: Unit) => {
@@ -54,17 +61,23 @@ export default class OpponentAi {
 
     this.tryExecuteUnitAction(unit, unitAi.getLastAction(unit, game.map, this))
 
-    // update state
-    this.store.set({})
+    this.update()
   }
 
   async performTurn() {
-    const { game } = this.store.state
-    const { id } = this.store.state.game.currenFaction
-    debug('ai: perform AI turn for faction', id)
-    const units = game.factionUnits[id]
-    await intervalForeach(units, this.moveUnit, 1000)
+    try {
+      const { game } = this.store.state
+      const { id } = this.store.state.game.currenFaction
+      debug('ai: perform turn for faction', id)
+      const units = game.factionUnits[id]
+      await intervalForeach(units, this.moveUnit, 1000)
 
-    this.store.endTurn()
+      this.store.endTurn()
+    } catch (e) {
+      if (e === 'GAME_OVER') {
+        // pass
+      }
+      throw e
+    }
   }
 }

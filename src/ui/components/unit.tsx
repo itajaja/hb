@@ -66,7 +66,7 @@ export default class Unit extends React.Component<IProps, {}> {
 
   render() {
     const { unit } = this.props
-    const barProps = { x: -10, height: 2, width: 20, c1: 'black' }
+    const barProps = { x: -10, height: 1, width: 20, c1: 'black' }
 
     return (
       <g ref="main">
@@ -82,7 +82,7 @@ export default class Unit extends React.Component<IProps, {}> {
           {unitGlyphs[unit.type.name]}
         </text>
         <Bar {...barProps} y={9} c2={'green'} value={unit.hp / unit.type.hp} />
-        <Bar {...barProps} y={11} c2={'blue'} value={unit.mp / unit.type.mp} />
+        <Bar {...barProps} y={10} c2={'blue'} value={unit.mp / unit.type.mp} />
       </g>
     )
   }
