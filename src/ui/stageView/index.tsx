@@ -26,6 +26,8 @@ const styles = StyleSheet.create({
 
 export interface IProps {
   game: Game,
+  onWin: (game: Game, playerFaction: string) => void,
+  onLose: () => void,
 }
 
 export interface IState {
@@ -58,8 +60,11 @@ export default class Stageview extends React.Component<IProps, IState> {
   }
 
   renderGameOver(winningFaction: string) {
+    const { game, playerFaction } = this.state
     const playerWon = winningFaction === this.state.playerFaction
-    // const onClick = playerWon ? this.props.onWin : this.props.onLose
+    const onClick = playerWon
+      ? () => this.props.onWin(game, playerFaction)
+      : () => this.props.onLose()
 
     return (
       <Dialog>
@@ -68,7 +73,7 @@ export default class Stageview extends React.Component<IProps, IState> {
           {playerWon ? 'YOU WON' : 'YOU LOST'}
         </Dialog.Content>
         <Dialog.Controls>
-          <Dialog.Control>OK</Dialog.Control>
+          <Dialog.Control onClick={onClick}>OK</Dialog.Control>
         </Dialog.Controls>
       </Dialog>
     )

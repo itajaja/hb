@@ -5,6 +5,7 @@ import Game from '../engine/game'
 import gid from '../engine/gid'
 import MainView from './mainView'
 import StageView from './stageView'
+import * as storage from './storage'
 
 const styles = StyleSheet.create({
   main: {
@@ -16,17 +17,55 @@ const styles = StyleSheet.create({
   },
 })
 
-export default class App extends React.Component<{}, { view: any }> {
+interface IState {
+  view: any,
+}
+
+export default class App extends React.Component<{}, IState> {
   constructor(props) {
     super(props)
-    this.state = {
-      view: <MainView onStartGame={this.onStartGame} />,
-    }
+    this.state = { view: this.getMainView() }
+  }
+
+  getMainView() {
+    return (
+      <MainView
+        onStartGame={this.onStartGame}
+        key={gid()}
+        {...storage.load()}
+        onResetProgress={this.onResetProgress}
+      />
+    )
+  }
+
+  onResetProgress = () => {
+    storage.reset()
+    this.setState({ view: this.getMainView() })
+  }
+
+  onWin = (game: Game, faction: string) => {
+    const oldState = storage.load()
+    storage.save({
+      levelReached: oldState.levelReached + 1,
+      party: game.factionUnits[faction].map(u => u.type),
+    })
+    this.setState({ view: this.getMainView() })
+  }
+
+  onLose = () => {
+    this.setState({ view: this.getMainView() })
   }
 
   onStartGame = (game: Game) => {
     this.setState({
-      view: <StageView game={game} key={gid()} />,
+      view: (
+        <StageView
+          game={game}
+          key={gid()}
+          onWin={this.onWin}
+          onLose={this.onLose}
+        />
+      ),
     })
   }
 

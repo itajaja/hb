@@ -5,7 +5,6 @@ import createLevel from '../../content/createLevel'
 import levels, { ILevelDefinition } from '../../content/levels'
 import Game from '../../engine/game'
 import { IUnitType } from '../../engine/unit'
-import * as units from '../../engine/units'
 import style from '../utils/style'
 
 const styles = StyleSheet.create({
@@ -17,60 +16,56 @@ const styles = StyleSheet.create({
     left: 0, top: 0, right: 0, bottom: 0,
     border: style.border,
   },
-  levelButton: {
+  button: {
     cursor: 'pointer',
     ':hover': {
       color: 'white',
     },
   },
+  blockedLevel: {
+    opacity: .6,
+  },
 })
 
 interface IProps {
   onStartGame: (game: Game) => void
-}
-
-interface IState {
+  onResetProgress: () => void
   levelReached: number,
   party: IUnitType[],
 }
 
-export default class MainView extends React.Component<IProps, IState> {
-  constructor(props) {
-    super(props)
-    this.state = {
-      levelReached: 0,
-      party: [units.archer, units.warrior, units.warrior, units.warrior],
-    }
-  }
-
+export default class MainView extends React.Component<IProps, {}> {
   onSelectLevel = (levelDef: ILevelDefinition) => {
-    const game = createLevel(levelDef, this.state.party)
+    const game = createLevel(levelDef, this.props.party)
     this.props.onStartGame(game)
-    // create game
-    // add party
-    // go to stage
   }
 
-  renderLevelButton = (level, idx) => {
+  renderLevelButton = (level, levelNumber) => {
+    const reached = this.props.levelReached >= levelNumber
+
     return (
       <h3
-        className={css(styles.levelButton)}
-        onClick={() => this.onSelectLevel(level)}
-        key={idx}
+        className={css(reached ? styles.button : styles.blockedLevel)}
+        onClick={reached ? () => this.onSelectLevel(level) : undefined}
+        key={levelNumber}
       >
-        Level {idx + 1}
+        Level {levelNumber + 1}
       </h3>
     )
   }
 
   render() {
-    const availableLevels = levels.slice(0, this.state.levelReached + 1)
     return (
       <div className={css(styles.main)}>
         <h1>HB</h1>
         <h2>Campaign</h2>
-        {availableLevels.map(this.renderLevelButton)}
-        <h2>Reset Progress</h2>
+        {levels.map(this.renderLevelButton)}
+        <h2
+          onClick={this.props.onResetProgress}
+          className={css(styles.button)}
+        >
+          Reset Progress
+        </h2>
       </div>
     )
   }
