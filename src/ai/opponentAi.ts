@@ -47,11 +47,11 @@ export default class OpponentAi {
   moveUnit = (unit: Unit) => {
     debug('ai: moving unit', unit)
     const { game } = this.store.state
-    const unitAi = unitAis[unit.type.name]
+    const unitAi = new unitAis[unit.type.name](unit, game.map, this)
 
-    this.tryExecuteUnitAction(unit, unitAi.getAction(unit, game.map, this))
+    this.tryExecuteUnitAction(unit, unitAi.getAction())
 
-    for (const p of unitAi.findPath(unit, game.map, this)) {
+    for (const p of unitAi.findPath()) {
       // we have to recompute the move targets every cycle because stuff
       // could have happened after performing the action
       const moveTargets = unit.moveTargets()
@@ -62,10 +62,10 @@ export default class OpponentAi {
       }
       unit.move(p)
 
-      this.tryExecuteUnitAction(unit, unitAi.getAction(unit, game.map, this))
+      this.tryExecuteUnitAction(unit, unitAi.getAction())
     }
 
-    this.tryExecuteUnitAction(unit, unitAi.getLastAction(unit, game.map, this))
+    this.tryExecuteUnitAction(unit, unitAi.getLastAction())
 
     this.update()
   }

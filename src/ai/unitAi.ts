@@ -1,24 +1,31 @@
 import * as actions from '../engine/actions'
+import { UnitAction } from '../engine/actions/action'
 import Hex from '../engine/hex'
-import { IMap } from '../engine/map'
+import { ICell, IMap } from '../engine/map'
 import Unit from '../engine/unit'
 import OpponentAi from './opponentAi'
 
-interface IUnitAi {
-  findPath(unit: Unit, map: IMap, ai: OpponentAi): Hex[]
+abstract class UnitAi {
+  constructor(
+    protected unit: Unit,
+    protected map: IMap,
+    protected ai: OpponentAi,
+  ) { }
 
-  getAction(unit: Unit, map: IMap, ai: OpponentAi): (() => void) | null
+  findTarget(actionType: typeof UnitAction, predicate: (c: ICell) => boolean) {
+    const action = this.unit.getAction(actions.MeleeAttack)
+    const targets = action.targets().map(this.map.cellAt)
+    const target = targets.find(predicate)
 
-  getLastAction(unit: Unit, map: IMap, ai: OpponentAi): (() => void) | null
-}
+    return target ? () => action.execute(target.pos) : null
+  }
 
-const warriorAi: IUnitAi = {
-  findPath(unit: Unit, map: IMap, ai: OpponentAi): Hex[] {
+  findPathTowardsEnemy() {
     // find nearest unit
-    const found = map.flood(
-      unit.pos,
-      ai.isCellNearEnemyUnit,
-      unit.canWalkOn,
+    const found = this.map.flood(
+      this.unit.pos,
+      this.ai.isCellNearEnemyUnit,
+      this.unit.canWalkOn,
     ).found
 
     if (found) {
@@ -27,114 +34,77 @@ const warriorAi: IUnitAi = {
     }
 
     return []
-  },
+  }
 
-  getAction(unit: Unit, map: IMap, ai: OpponentAi): (() => void) | null {
-    const action = unit.getAction(actions.MeleeAttack)
-    const targets = action.targets().map(map.cellAt)
-    const target = targets.find(ai.hasCellEnemyUnit)
+  abstract findPath(): Hex[]
 
-    return target ? () => action.execute(target.pos) : null
-  },
+  abstract getAction(): (() => void) | null
 
-  getLastAction(unit: Unit, map: IMap, ai: OpponentAi): (() => void) | null {
-    return () => unit.getAction(actions.Guard).execute(unit.pos)
-  },
+  abstract getLastAction(): (() => void) | null
 }
 
-const archerAi: IUnitAi = {
-  findPath(unit: Unit, map: IMap, ai: OpponentAi): Hex[] {
-    // find nearest unit
-    const found = map.flood(
-      unit.pos,
-      ai.isCellNearEnemyUnit,
-      unit.canWalkOn,
-    ).found
+class WarriorAi extends UnitAi {
+  findPath(): Hex[] {
+    return this.findPathTowardsEnemy()
+  }
 
-    if (found) {
-      const [, , path] = found
-      return path
-    }
+  getAction(): (() => void) | null {
+    return this.findTarget(actions.MeleeAttack, this.ai.hasCellEnemyUnit)
+  }
 
-    return []
-  },
-
-  // try to range attack
-  getAction(unit: Unit, map: IMap, ai: OpponentAi): (() => void) | null {
-    const action = unit.getAction(actions.RangedAttack)
-    const targets = action.targets().map(map.cellAt)
-    const target = targets.find(ai.hasCellEnemyUnit)
-
-    return target ? () => action.execute(target.pos) : null
-  },
-
-  // try to melee attack
-  getLastAction(unit: Unit, map: IMap, ai: OpponentAi): (() => void) | null {
-    const action = unit.getAction(actions.MeleeAttack)
-    const targets = action.targets().map(map.cellAt)
-    const target = targets.find(ai.hasCellEnemyUnit)
-
-    return target ? () => action.execute(target.pos) : null
-  },
+  getLastAction(): (() => void) | null {
+    return () => this.unit.getAction(actions.Guard).execute(this.unit.pos)
+  }
 }
 
-const mageAi: IUnitAi = {
-  findPath(unit: Unit, map: IMap, ai: OpponentAi): Hex[] {
-    // find nearest unit
-    const found = map.flood(
-      unit.pos,
-      ai.isCellNearEnemyUnit,
-      unit.canWalkOn,
-    ).found
+class ArcherAi extends UnitAi {
+  findPath(): Hex[] {
+    return this.findPathTowardsEnemy()
+  }
 
-    if (found) {
-      const [, , path] = found
-      return path
+  getAction(): (() => void) | null {
+    return this.findTarget(actions.RangedAttack, this.ai.hasCellEnemyUnit)
+  }
+
+  getLastAction(): (() => void) | null {
+    return this.findTarget(actions.MeleeAttack, this.ai.hasCellEnemyUnit)
+  }
+}
+
+class MageAi extends UnitAi {
+  findPath(): Hex[] {
+    return this.findPathTowardsEnemy()
+  }
+
+  getAction(): (() => void) | null {
+    const heal = this.findTarget(
+      actions.Heal,
+      c => ( // a friendly unit with not max hp
+        this.ai.hasCellFriendlyUnit(c)
+        && (c.thing as Unit).hp < (c.thing as Unit).type.hp
+      ),
+    )
+    if (heal) {
+      return heal
     }
+    return this.findTarget(
+      actions.Fireball,
+      c => ( // an enemy unit not too close
+        this.ai.hasCellEnemyUnit(c) && !this.unit.pos.isNeighbor(c.pos)
+      ),
+    )
+  }
 
-    return []
-  },
-
-  // try to heal. if you cannot heal attack. do fireball only if you are not
-  // in the deflagration area, otherwise melee
-  getAction(unit: Unit, map: IMap, ai: OpponentAi): (() => void) | null {
-    const hAction = unit.getAction(actions.Heal)
-    const hTargets = hAction.targets().map(map.cellAt)
-    // a friendly unit with not max hp
-    const hTarget = hTargets.find(c => (
-      ai.hasCellFriendlyUnit(c)
-      && (c.thing as Unit).hp < (c.thing as Unit).type.hp
-    ))
-
-    if (hTarget) {
-      return () => hAction.execute(hTarget.pos)
-    }
-
-    const fAction = unit.getAction(actions.Fireball)
-    const fTargets = fAction.targets().map(map.cellAt)
-    // an enemy unit not too close
-    const fTarget = fTargets.find(c => (
-      ai.hasCellEnemyUnit(c) && !unit.pos.isNeighbor(c.pos)
-    ))
-
-    if (fTarget) {
-      return () => fAction.execute(fTarget.pos)
-    }
-
-    const mAction = unit.getAction(actions.MeleeAttack)
-    const mTargets = mAction.targets().map(map.cellAt)
-    const mTarget = mTargets.find(ai.hasCellEnemyUnit)
-
-    return mTarget ? () => mAction.execute(mTarget.pos) : null
-  },
-
-  getLastAction(unit: Unit, map: IMap, ai: OpponentAi): (() => void) | null {
-    return null
-  },
+  getLastAction(): (() => void) | null {
+    return this.findTarget(actions.MeleeAttack, this.ai.hasCellEnemyUnit)
+  }
 }
 
 export default {
-  Warrior: warriorAi,
-  Archer: archerAi,
-  Mage: mageAi,
-} as {[idx: string]: IUnitAi}
+  Warrior: WarriorAi,
+  Archer: ArcherAi,
+  Mage: MageAi,
+} as ({
+  [idx: string]:
+  typeof UnitAi & { new (unit: Unit, map: IMap, ai: OpponentAi) },
+})
