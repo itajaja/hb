@@ -13,7 +13,7 @@ abstract class UnitAi {
   ) { }
 
   findTarget(actionType: typeof UnitAction, predicate: (c: ICell) => boolean) {
-    const action = this.unit.getAction(actions.MeleeAttack)
+    const action = this.unit.getAction(actionType)
     const targets = action.targets().map(this.map.cellAt)
     const target = targets.find(predicate)
 
