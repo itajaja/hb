@@ -9,6 +9,7 @@ const KEY = 'hb:gameState'
 export interface IStorage {
   levelReached: number,
   party: IUnitType[]
+  money: number,
 }
 
 interface IRawStorage {
@@ -17,14 +18,7 @@ interface IRawStorage {
   money: number,
 }
 
-function getInitialState(): IStorage {
-  return {
-    levelReached: 0,
-    party: [units.archer, units.warrior, units.warrior, units.warrior],
-  }
-}
-
-export function load(): IStorage {
+export function load(): IStorage | null {
   const data = store.get(KEY)
   if (data) {
     const rawData: IRawStorage = JSON.parse(data)
@@ -32,23 +26,23 @@ export function load(): IStorage {
     return {
       levelReached: rawData.levelReached,
       party: rawData.party.map(u => units[u]),
+      money: rawData.money,
     }
   }
 
-  return getInitialState()
+  return null
 }
 
 export function save(data: IStorage): void {
   const rawData: IRawStorage = {
     levelReached: data.levelReached,
     party: data.party.map(u => u.name.toLowerCase()),
-    money: 0,
+    money: data.money,
   }
   store.set(KEY, JSON.stringify(rawData))
   debug('storage: successfully saved storage', rawData)
 }
 
-export function reset(): IStorage {
+export function reset(): void {
   store.remove(KEY)
-  return getInitialState()
 }

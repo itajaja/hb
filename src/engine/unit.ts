@@ -27,6 +27,8 @@ export interface IUnitType {
   mp: number
 
   actions: Array<typeof UnitAction>,
+
+  cost: number,
 }
 
 export default class Unit extends Thing {

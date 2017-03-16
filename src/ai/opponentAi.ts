@@ -24,7 +24,7 @@ export default class OpponentAi {
   }
 
   update() {
-    this.store.set({}) // update state
+    this.store.forceUpdate()
     if (this.store.state.game.checkGameOver()) {
       throw 'GAME_OVER' // tslint:disable-line:no-string-throw
     }

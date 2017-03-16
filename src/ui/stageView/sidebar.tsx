@@ -114,7 +114,7 @@ export default function Sidebar({ store }: IProps) {
   }
 
   return (
-    <Layout extraStyle={[styles.main]}>
+    <Layout classes={[styles.main]}>
       <div className={css(styles.container)}>
         <h2>Turn: {epoch} ({currenFaction.name})</h2>
         {cellInfo}

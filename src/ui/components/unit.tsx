@@ -5,6 +5,7 @@ import * as React from 'react'
 import { UnitAction } from '../../engine/actions/action'
 import EUnit from '../../engine/unit'
 import Bar from './bar'
+import unitGlyph from './unitGlyph'
 
 const styles = StyleSheet.create({
   main: {
@@ -12,12 +13,6 @@ const styles = StyleSheet.create({
     dominantBaseline: 'central',
   },
 })
-
-const unitGlyphs = {
-  Warrior: '⚔️',
-  Archer: '🏹',
-  Mage: '🎩',
-}
 
 interface IProps {
   unit: EUnit,
@@ -79,7 +74,7 @@ export default class Unit extends React.Component<IProps, {}> {
             textShadow: `black 0 0 5px, ${unit.faction.color} 0 0 10em, ${unit.faction.color} 0 0 10em`,
           }}
         >
-          {unitGlyphs[unit.type.name]}
+          {unitGlyph(unit.type)}  
         </text>
         <Bar {...barProps} y={9} c2={'green'} value={unit.hp / unit.type.hp} />
         <Bar {...barProps} y={10} c2={'blue'} value={unit.mp / unit.type.mp} />

@@ -1,6 +1,8 @@
 import { css, StyleSheet } from 'aphrodite'
 import * as React from 'react'
 
+import { StyledComponentProps } from './withStyle'
+
 const styles = StyleSheet.create({
   layout: {
     display: 'flex',
@@ -25,25 +27,31 @@ const styles = StyleSheet.create({
 
 const alignStyles = StyleSheet.create({
   center: { alignItems: 'center' },
-  flexStart: { alignItems: 'flex-start' },
-  flexEnd: { alignItems: 'flex-end' },
+  'flex-start': { alignItems: 'flex-start' },
+  'flex-end': { alignItems: 'flex-end' },
   stretch: { alignItems: 'stretch' },
 })
 
 const justifyStyles = StyleSheet.create({
   center: { justifyContent: 'center' },
-  flexStart: { justifyContent: 'flex-start' },
-  flexEnd: { justifyContent: 'flex-end' },
-  spaceBetween: { justifyContent: 'space-between' },
+  'flex-start': { justifyContent: 'flex-start' },
+  'flex-end': { justifyContent: 'flex-end' },
+  'space-between': { justifyContent: 'space-between' },
+  'space-around': { justifyContent: 'space-around' },
+})
+
+const wrapStyles = StyleSheet.create({
+  wrap: { flexWrap: 'wrap' },
+  nowrap: { flexWrap: 'nowrap' },
 })
 
 interface IProps {
   direction?: 'column' | 'row'
   grow?: boolean
-  align?: 'center' | 'flex-start' | 'flex-end' | 'space-between'
-  justify?: 'center' | 'flex-start' | 'flex-end' | 'space-between'
+  align?: 'center' | 'flex-start' | 'flex-end' | 'stretch'
+  justify?: 'center' | 'flex-start' | 'flex-end' | 'space-between' | 'space-around' // tslint:disable-line:max-line-length
+  wrap?: 'wrap' | 'nowrap' | 'initial',
   Component?: any
-  extraStyle?: any[],
 }
 
 export default function Layout({
@@ -52,9 +60,10 @@ export default function Layout({
     align = 'stretch',
     justify = 'flex-start',
     Component = 'div',
-    extraStyle = [],
+    wrap = 'initial',
+    classes = [],
     ...props,
-}: IProps) {
+}: StyledComponentProps<IProps>) {
   return (
     <Component
       {...props}
@@ -63,7 +72,8 @@ export default function Layout({
         alignStyles[align],
         justifyStyles[justify],
         styles[direction],
-        ...extraStyle,
+        wrapStyles[wrap],
+        ...classes,
       )}
     />
   )

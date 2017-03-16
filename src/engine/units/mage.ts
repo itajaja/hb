@@ -13,4 +13,6 @@ export default {
   hp: 6,
   mp: 2,
   actions: [MeleeAttack, Heal, Fireball],
+
+  cost: 10,
 } as IUnitType

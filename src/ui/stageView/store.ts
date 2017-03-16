@@ -27,7 +27,7 @@ export default class Store extends BaseStore<IState> {
       }
       this.set({
         selectedAction: undefined,
-        targets: undefined,
+        targets: {},
         selectedCell: undefined,
       })
     } else {
@@ -50,7 +50,7 @@ export default class Store extends BaseStore<IState> {
     game.endTurn()
     this.set({
       selectedAction: undefined,
-      targets: undefined,
+      targets: {},
       selectedCell: undefined,
     })
 

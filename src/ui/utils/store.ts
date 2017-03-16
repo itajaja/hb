@@ -1,14 +1,17 @@
 import * as React from 'react'
 
-export default class Store<TState extends object> {
-  constructor(private component: React.Component<any, TState>) {}
+export default class Store<S extends object> {
+  constructor(private component: React.Component<any, S>) {}
 
   get state() {
     return this.component.state
   }
 
-  set(state: Partial<TState>) {
-    // this casting is safe. Partial<T> is better than what setState offers
-    this.component.setState(state as any)
+  forceUpdate = () => {
+    this.set({})
+  }
+
+  protected set<K extends keyof S>(state: Pick<S, K>, cb?: () => any) {
+    this.component.setState(state, cb)
   }
 }

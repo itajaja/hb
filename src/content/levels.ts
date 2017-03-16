@@ -12,6 +12,8 @@ export interface ILevelDefinition {
   opponents: Map<IUnitType, number>
 
   partyDeployOrigin: Hex
+
+  reward: number
 }
 
 const level1 = {
@@ -27,6 +29,8 @@ const level1 = {
   ]),
 
   partyDeployOrigin: new Hex(5, 0),
+
+  reward: 5,
 }
 
 const level2 = {
@@ -43,6 +47,8 @@ const level2 = {
   ]),
 
   partyDeployOrigin: new Hex(5, 0),
+
+  reward: 5,
 }
 
 const level3 = {
@@ -59,6 +65,8 @@ const level3 = {
   ]),
 
   partyDeployOrigin: new Hex(5, 0),
+
+  reward: 7,
 }
 
 const level4 = {
@@ -75,6 +83,8 @@ const level4 = {
   ]),
 
   partyDeployOrigin: new Hex(5, 0),
+
+  reward: 7,
 }
 
 const level5 = {
@@ -92,6 +102,8 @@ const level5 = {
   ]),
 
   partyDeployOrigin: new Hex(5, 0),
+
+  reward: 9,
 }
 
 const level6 = {
@@ -107,6 +119,8 @@ const level6 = {
   ]),
 
   partyDeployOrigin: new Hex(5, 0),
+
+  reward: 9,
 }
 
 const level7 = {
@@ -123,6 +137,8 @@ const level7 = {
   ]),
 
   partyDeployOrigin: new Hex(5, 0),
+
+  reward: 11,
 }
 
 const level8 = {
@@ -138,6 +154,8 @@ const level8 = {
   ]),
 
   partyDeployOrigin: new Hex(5, 0),
+
+  reward: 11,
 }
 
 const level9 = {
@@ -155,6 +173,8 @@ const level9 = {
   ]),
 
   partyDeployOrigin: new Hex(5, 0),
+
+  reward: 11,
 }
 
 const level10 = {
@@ -172,6 +192,8 @@ const level10 = {
   ]),
 
   partyDeployOrigin: new Hex(5, 0),
+
+  reward: 13,
 }
 
 const levels: ILevelDefinition[] = [

@@ -5,29 +5,22 @@ import { IAction } from '../../engine/actions/action'
 import Game from '../../engine/game'
 import Hex from '../../engine/hex'
 import { ICell } from '../../engine/map'
-import Dialog from '../components/Dialog'
+import Dialog from '../components/dialog'
 import Layout from '../components/layout'
-import style from '../utils/style'
+import Screen from '../components/screen'
+import MainStore from '../mainStore'
 import Cell from './cell'
 import Sidebar from './sidebar'
 import Store from './store'
 
 const styles = StyleSheet.create({
-  main: {
-    background: style.darkGrey,
-    color: style.textColor,
-    position: 'relative',
-  },
   mapContainer: {
-    flex: 1,
     overflow: 'auto',
   },
 })
 
 export interface IProps {
-  game: Game,
-  onWin: (game: Game, playerFaction: string) => void,
-  onLose: () => void,
+  store: MainStore,
 }
 
 export interface IState {
@@ -43,12 +36,14 @@ export default class Stageview extends React.Component<IProps, IState> {
 
   constructor(props) {
     super(props)
-    const { game } = this.props
-    // The player faction is the first one, the rest are AIs
-    const playerFaction = Array.from(game.factions.keys())[0]
+    const currentGame = this.props.store.state.currentGame!
 
     this.store = new Store(this)
-    this.state = { game: this.props.game, targets: {}, playerFaction }
+    this.state = {
+      playerFaction: currentGame.playerFaction,
+      game: currentGame.game,
+      targets: {},
+    }
   }
 
   componentDidMount() {
@@ -60,11 +55,9 @@ export default class Stageview extends React.Component<IProps, IState> {
   }
 
   renderGameOver(winningFaction: string) {
-    const { game, playerFaction } = this.state
-    const playerWon = winningFaction === this.state.playerFaction
-    const onClick = playerWon
-      ? () => this.props.onWin(game, playerFaction)
-      : () => this.props.onLose()
+    const { finishGame } = this.props.store
+    const { playerFaction } = this.state
+    const playerWon = winningFaction === playerFaction
 
     return (
       <Dialog>
@@ -73,7 +66,9 @@ export default class Stageview extends React.Component<IProps, IState> {
           {playerWon ? 'YOU WON' : 'YOU LOST'}
         </Dialog.Content>
         <Dialog.Controls>
-          <Dialog.Control onClick={onClick}>OK</Dialog.Control>
+          <Dialog.Control onClick={() => finishGame(playerWon)}>
+            OK
+          </Dialog.Control>
         </Dialog.Controls>
       </Dialog>
     )
@@ -87,20 +82,21 @@ export default class Stageview extends React.Component<IProps, IState> {
     }
 
     return (
-      <Layout extraStyle={[styles.main]} direction="row">
+      <Screen direction="row">
         {dialog}
-        <div className={css(styles.mapContainer)}>
-          <svg ref="map">
-            <g>
-              ${this.state.game.map.cells.map(c =>
-                <Cell store={this.store} cell={c} key={c.pos.toString()} />,
-              )}
-            </g>
-          </svg>
-        </div>
+        <Layout justify="center" grow>
+          <div className={css(styles.mapContainer)}>
+            <svg ref="map">
+              <g>
+                ${this.state.game.map.cells.map(c =>
+                  <Cell store={this.store} cell={c} key={c.pos.toString()} />,
+                )}
+              </g>
+            </svg>
+          </div>
+        </Layout>
         <Sidebar store={this.store} />
-      </Layout>
+      </Screen>
     )
-
   }
 }

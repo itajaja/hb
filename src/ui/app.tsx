@@ -1,11 +1,10 @@
 import { css, StyleSheet } from 'aphrodite'
 import * as React from 'react'
 
-import Game from '../engine/game'
-import gid from '../engine/gid'
+import MainStore, { IState } from './mainStore'
 import MainView from './mainView'
 import StageView from './stageView'
-import * as storage from './storage'
+import style from './utils/style'
 
 const styles = StyleSheet.create({
   main: {
@@ -14,65 +13,33 @@ const styles = StyleSheet.create({
     position: 'fixed',
     left: 0, top: 0, right: 0, bottom: 0,
     overflow: 'auto',
+    background: style.darkGrey,
+    color: style.textColor,
   },
 })
 
-interface IState {
-  view: any,
-}
-
 export default class App extends React.Component<{}, IState> {
+  store: MainStore
+
   constructor(props) {
     super(props)
-    this.state = { view: this.getMainView() }
+    this.store = new MainStore(this)
+    this.state = this.store.loadProgress()
   }
 
-  getMainView() {
-    return (
-      <MainView
-        onStartGame={this.onStartGame}
-        key={gid()}
-        {...storage.load()}
-        onResetProgress={this.onResetProgress}
-      />
-    )
-  }
+  // This is just a very basic router based on the store state
+  router() {
+    if (this.state.currentGame) {
+      return <StageView store={this.store} />
+    }
 
-  onResetProgress = () => {
-    storage.reset()
-    this.setState({ view: this.getMainView() })
-  }
-
-  onWin = (game: Game, faction: string) => {
-    const oldState = storage.load()
-    storage.save({
-      levelReached: oldState.levelReached + 1,
-      party: game.factionUnits[faction].map(u => u.type),
-    })
-    this.setState({ view: this.getMainView() })
-  }
-
-  onLose = () => {
-    this.setState({ view: this.getMainView() })
-  }
-
-  onStartGame = (game: Game) => {
-    this.setState({
-      view: (
-        <StageView
-          game={game}
-          key={gid()}
-          onWin={this.onWin}
-          onLose={this.onLose}
-        />
-      ),
-    })
+    return <MainView store={this.store} />
   }
 
   render() {
     return (
       <div className={css(styles.main)}>
-        {this.state.view}
+        {this.router()}
       </div>
     )
   }
