@@ -45,7 +45,7 @@ export default class MainStore extends Store<IState> {
     this.set({
       currentGame: {
         game,
-        level: 0,
+        level,
         // The player faction is the first one, the rest are AIs
         playerFaction: Array.from(game.factions.keys())[0],
       },
