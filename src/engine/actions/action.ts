@@ -24,7 +24,7 @@ export class UnitAction implements IAction {
   name: string
   description: string
 
-  params: object = {}
+  params: any = {}
 
   constructor(public game: Game, public unit: Unit) {}
 

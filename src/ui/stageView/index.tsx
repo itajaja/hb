@@ -1,10 +1,11 @@
 import { css, StyleSheet } from 'aphrodite'
 import * as React from 'react'
 
-import { IAction } from '../../engine/actions/action'
+import { UnitAction } from '../../engine/actions/action'
 import Game from '../../engine/game'
 import Hex from '../../engine/hex'
 import { ICell } from '../../engine/map'
+import Unit from '../../engine/unit'
 import Dialog from '../components/dialog'
 import Layout from '../components/layout'
 import Screen from '../components/screen'
@@ -26,9 +27,27 @@ export interface IProps {
 export interface IState {
   playerFaction: string
   game: Game,
-  selectedCell?: ICell
-  selectedAction?: IAction
-  targets: { [idx: string]: Hex }
+
+  selection?: {
+    cell: ICell,
+    unit?: {
+      unit: Unit,
+      paths: { [idx: string]: Hex },
+      action?: {
+        action: UnitAction,
+        targets: { [idx: string]: Hex },
+        area?: { [idx: string]: Hex },
+      },
+    },
+  }
+
+  hover?: {
+    cell: ICell,
+    unit?: {
+      unit: Unit,
+      paths: { [idx: string]: Hex },
+    },
+  }
 }
 
 export default class Stageview extends React.Component<IProps, IState> {
@@ -42,7 +61,6 @@ export default class Stageview extends React.Component<IProps, IState> {
     this.state = {
       playerFaction: currentGame.playerFaction,
       game: currentGame.game,
-      targets: {},
     }
   }
 

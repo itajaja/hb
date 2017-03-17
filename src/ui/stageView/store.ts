@@ -1,5 +1,5 @@
 import OpponentAi from '../../ai/opponentAi'
-import { IAction } from '../../engine/actions/action'
+import { UnitAction } from '../../engine/actions/action'
 import Hex from '../../engine/hex'
 import { ICell } from '../../engine/map'
 import Unit from '../../engine/unit'
@@ -8,50 +8,74 @@ import BaseStore from '../utils/Store'
 import { IState } from './index'
 
 export default class Store extends BaseStore<IState> {
-  selectCell = (selectedCell: ICell) => {
-    const { pos, thing } = selectedCell
-    const targets: {[idx: string]: Hex} = {}
-    const prevCell = this.state.selectedCell
+  indexCells(hexes: Hex[]): {[idx: string]: Hex} {
+    const index = {}
+    hexes.forEach(h => index[h.toString()] = h)
+    return index
+  }
 
-    if (thing && thing instanceof Unit
-      && thing.factionId === this.state.game.currenFaction.id
-    ) {
-      thing.moveTargets().forEach(h => targets[h.toString()] = h)
-    }
-    if (this.state.targets && this.state.targets[pos.toString()] ) {
-      // hit targeted cell
-      if (this.state.selectedAction) { // do action
-        this.state.selectedAction!.execute(pos)
-      } else { // if there is no action, it's move
-        (prevCell!.thing! as Unit).move(pos)
-      }
-      this.set({
-        selectedAction: undefined,
-        targets: {},
-        selectedCell: undefined,
-      })
-    } else {
-      this.set({
-        selectedCell,
-        selectedAction: undefined,
-        targets,
-      })
+  getCellInfo(target: ICell) {
+    const { thing } = target
+
+    return {
+      cell: target,
+      unit: (thing && thing instanceof Unit) ? {
+        unit: thing!,
+        paths: this.indexCells(thing.moveTargets()),
+      } : undefined,
     }
   }
 
-  selectAction = (selectedAction: IAction) => {
-    const targets = {}
-    selectedAction.targets().forEach(h => targets[h.toString()] = h)
-    this.set({ selectedAction, targets })
+  selectCell = (cell: ICell) => {
+    const { selection, playerFaction } = this.state
+    const unit = selection && selection.unit
+    const action = unit && unit.action
+
+    let newSelection
+    if (action && action.targets[cell.pos.toString()]) {
+      action.action.execute(cell.pos)
+    } else if (
+      unit && unit.unit.factionId === playerFaction
+      && unit.paths[cell.pos.toString()]
+    ) {
+      unit.unit.move(cell.pos)
+    } else {
+      newSelection = this.getCellInfo(cell)
+    }
+
+    this.set({ selection: newSelection, hover: undefined })
+  }
+
+  selectAction = (action: UnitAction) => {
+    const { selection } = this.state
+    selection!.unit!.action = {
+      action,
+      targets: this.indexCells(action.targets()),
+    }
+
+    this.set({ selection, hover: undefined })
+  }
+
+  hover = (cell: ICell) => {
+    const { selection } = this.state
+    const unit = selection && selection.unit
+    const action = unit && unit.action
+
+    if (action && action.action.params.area) {
+      action.area = action.targets[cell.pos.toString()]
+        ? this.indexCells(cell.pos.range(action.action.params.area))
+        : undefined
+    }
+
+    this.set({ selection, hover: this.getCellInfo(cell) })
   }
 
   endTurn = async () => {
     const { game } = this.state
     game.endTurn()
     this.set({
-      selectedAction: undefined,
-      targets: {},
-      selectedCell: undefined,
+      selection: undefined,
+      hover: undefined,
     })
 
     const currentFactionId = game.currenFaction.id

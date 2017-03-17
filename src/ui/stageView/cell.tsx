@@ -36,14 +36,6 @@ const styles = StyleSheet.create({
     strokeWidth: .1,
     transition: '.1s ease-in-out all',
   },
-
-  targetOverlay: {
-    fill: 'transparent',
-
-    ':hover': {
-      stroke: 'rgba(0, 0, 0, 0.3)',
-    },
-  },
 })
 
 const terrainStyles = StyleSheet.create({
@@ -51,17 +43,29 @@ const terrainStyles = StyleSheet.create({
   [Terrain.Ground]: { fill: '#5C4B3D' },
 })
 
-const targetStyles = StyleSheet.create({
+const overlayStyles = StyleSheet.create({
+  main: {
+    fill: 'transparent',
+
+    ':hover': {
+      stroke: 'rgba(0, 0, 0, 0.3)',
+    },
+  },
+
   selected: {
     stroke: style.gold,
     ':hover': {
       stroke: style.gold,
     },
   },
-  actionTargeted: {
+
+  target: {
     fill: 'rgba(255, 0, 0, 0.1)', stroke: 'rgba(255, 0, 0, 0.1)',
   },
-  walkTargeted: {
+  area: {
+    fill: 'rgba(255, 0, 0, 0.2)', stroke: 'rgba(255, 0, 0, 0.2)',
+  },
+  moveTarget: {
     fill: 'rgba(255, 255, 255, 0.1)', stroke: 'rgba(255, 255, 255, 0.1)',
   },
 })
@@ -76,44 +80,53 @@ interface IProps {
 }
 
 export default class Cell extends React.Component<IProps, {}> {
-  handleClick = () => {
+  state = {
+    up: false,
+  }
+
+  onClick = () => {
     this.props.store.selectCell(this.props.cell)
+  }
+
+  onMouseOver = () => {
+    this.props.store.hover(this.props.cell)
   }
 
   render() {
     const { cell, store } = this.props
     const { pos, thing } = cell
-    const { selectedAction, selectedCell, targets } = store.state
+    const posId = pos.toString()
+
+    const { hover, selection } = store.state
+    const unit = selection && selection.unit
+    const action = unit && unit.action
+
+    const target = action && action.targets[posId]
+    const actionArea = action && action.area && action.area[posId]
+    const moveTarget = !action && unit && unit.paths[posId]
+      || !unit && hover && hover.unit && hover.unit.paths[posId]
+    const selected = selection && selection.cell.pos.toString() === posId
+
+    const terrainClass = css(styles.terrain, terrainStyles[cell.terrain])
+    const overlayClass = css(
+      overlayStyles.main,
+      target && overlayStyles.target,
+      actionArea && overlayStyles.area,
+      moveTarget && overlayStyles.moveTarget,
+      selected && overlayStyles.selected,
+    )
+
     const { x, y } = hexCenter(pos, cellSize)
 
-    let selected = false
-    if (selectedCell && pos.toString() === selectedCell.pos.toString()) {
-      selected = true
-    }
-    let targetStyle
-    if (targets && targets[pos.toString()]) {
-      targetStyle = selectedAction
-        ? targetStyles.actionTargeted
-        : targetStyles.walkTargeted
-    }
-
-    const terrainClass = css(
-      styles.terrain, terrainStyles[cell.terrain],
-    )
-    const overlayClass = css(
-      styles.targetOverlay,
-      selected && targetStyles.selected,
-      targetStyle,
-    )
-
     return (
-      <g transform={translate(x, y)} onClick={this.handleClick}>
-        <polygon className={terrainClass} points={HEX_POINTS}/>
+      <g
+        transform={translate(x, y)}
+        onMouseOver={this.onMouseOver}
+        onClick={this.onClick}
+      >
+        <polygon className={terrainClass} points={HEX_POINTS} />
         {thing && thing instanceof EUnit && <Unit unit={thing} />}
-        <polygon
-          className={overlayClass}
-          points={INNER_HEX_POINTS}
-        />
+        <polygon className={overlayClass} points={INNER_HEX_POINTS} />
       </g>
     )
   }

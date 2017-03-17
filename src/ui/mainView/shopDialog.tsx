@@ -86,8 +86,13 @@ export default class MainView extends React.Component<IProps, IState> {
     )
   }
 
+  onPurchase = () => {
+    this.props.store.purchase(this.state.cart, this.totalCost)
+    this.props.onCancel()
+  }
+
   render() {
-    const { onCancel, store } = this.props
+    const { onCancel } = this.props
 
     return (
       <Dialog>
@@ -108,9 +113,7 @@ export default class MainView extends React.Component<IProps, IState> {
           </div>
         </Dialog.Content>
         <Dialog.Controls>
-          <Dialog.Control
-            onClick={() => store.purchase(this.state.cart, this.totalCost)}
-          >
+          <Dialog.Control onClick={this.onPurchase}>
             Confirm Purchase
           </Dialog.Control>
           <Dialog.Control onClick={onCancel}>

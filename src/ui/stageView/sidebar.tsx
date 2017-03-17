@@ -2,7 +2,7 @@ import { css, StyleSheet } from 'aphrodite'
 import * as React from 'react'
 
 import { UnitAction } from '../../engine/actions/action'
-import { Terrain } from '../../engine/map'
+import { ICell, Terrain } from '../../engine/map'
 import Unit, { UnitState } from '../../engine/unit'
 import Layout from '../components/layout'
 import style from '../utils/style'
@@ -36,17 +36,53 @@ const styles = StyleSheet.create({
   },
 })
 
-function renderActionButton(action: UnitAction, store: Store) {
-  const selectedAction = action === store.state.selectedAction
+function renderActionButton(
+  action: UnitAction, selectedAction: UnitAction | undefined, store: Store,
+) {
+  const isSelected = action === selectedAction
 
   return (
     <span
       key={action.name}
       onClick={() => store.selectAction(action)}
-      className={css(selectedAction && styles.selectedAction, styles.button)}
+      className={css(styles.button, isSelected && styles.selectedAction)}
     >
       {action.name}
     </span>
+  )
+}
+
+function renderCellInfo(cell: ICell) {
+  return (
+    <p>
+      {cell.pos.toString()} - terrain type: {Terrain[cell.terrain]}
+    </p>
+  )
+}
+
+function renderUnitInfo(unit: Unit) {
+  return (
+    <div>
+      Unit: {unit.type.name}
+      <br />
+      Satus: {UnitState[unit.state]}
+      <br />
+      hp: {unit.hp}/{unit.type.hp}
+      <br />
+      mp: {unit.mp}/{unit.type.mp}
+    </div>
+  )
+}
+
+function renderActions(
+  unit: Unit, selectedAction: UnitAction | undefined, store: Store,
+) {
+  return (
+    <div>
+      {unit.actions.map(a => renderActionButton(a, selectedAction, store))}
+      <br />
+      {selectedAction && selectedAction.description}
+    </div>
   )
 }
 
@@ -55,69 +91,25 @@ interface IProps {
 }
 
 export default function Sidebar({ store }: IProps) {
-  const { game, selectedCell } = store.state
+  const { game, hover, selection, playerFaction } = store.state
   const { currenFaction, epoch } = game
-  let cellInfo
+  const unit =  (hover && hover.unit) || (selection && selection.unit)
+  const cell =  (hover && hover.cell) || (selection && selection.cell)
+  const action = hover ? undefined : selection && selection.unit
+    && selection.unit.action && selection.unit.action.action
 
-  if (selectedCell) {
-    let unitInfo
-    if (selectedCell.thing && selectedCell.thing instanceof Unit) {
-      const unit = selectedCell.thing
-      const selectedAction = unit.actions
-        .find(a => a === store.state.selectedAction)
-      let unitActions
-      let selectedActionDescription
-
-      if (
-        currenFaction.id === unit.faction.id &&
-        unit.canPerformAction
-      ) {
-        unitActions = unit.actions.map(a => renderActionButton(a, store))
-      }
-      if (selectedAction) {
-        selectedActionDescription = (
-          <div>
-            {selectedAction.description}
-            <br />
-            {Object.keys(selectedAction.params).map(i =>
-              <div key={i}>{i}: {selectedAction.params[i]}</div>,
-            )}
-          </div>
-        )
-      }
-
-      unitInfo = (
-        <div>
-          Unit: {unit.type.name}
-          <br />
-          Satus: {UnitState[unit.state]}
-          <br />
-          hp: {unit.hp}/{unit.type.hp}
-          <br />
-          mp: {unit.mp}/{unit.type.mp}
-          <div>
-            {unitActions}
-          </div>
-          {selectedActionDescription}
-        </div>
-      )
-    }
-    cellInfo = (
-      <div>
-        <p>
-          {selectedCell.pos.toString()} -
-          terrain type: {Terrain[selectedCell.terrain]}
-        </p>
-        {unitInfo}
-      </div>
-    )
-  }
+  const cellInfo = cell && renderCellInfo(cell)
+  const unitInfo = unit && renderUnitInfo(unit.unit)
+  const actionsInfo = unit && unit.unit.factionId === playerFaction
+    && renderActions(unit.unit, action, store)
 
   return (
     <Layout classes={[styles.main]}>
       <div className={css(styles.container)}>
         <h2>Turn: {epoch} ({currenFaction.name})</h2>
         {cellInfo}
+        {unitInfo}
+        {actionsInfo}
       </div>
       <Layout grow />
       <div className={css(styles.endTurnButton)} onClick={store.endTurn}>
