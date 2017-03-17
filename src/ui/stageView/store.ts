@@ -35,10 +35,11 @@ export default class Store extends BaseStore<IState> {
     if (action && action.targets[cell.pos.toString()]) {
       action.action.execute(cell.pos)
     } else if (
-      unit && unit.unit.factionId === playerFaction
+      !action && unit && unit.unit.factionId === playerFaction
       && unit.paths[cell.pos.toString()]
     ) {
       unit.unit.move(cell.pos)
+      newSelection = this.getCellInfo(cell)
     } else {
       newSelection = this.getCellInfo(cell)
     }

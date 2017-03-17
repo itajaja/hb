@@ -101,7 +101,7 @@ export default function Sidebar({ store }: IProps) {
   const cellInfo = cell && renderCellInfo(cell)
   const unitInfo = unit && renderUnitInfo(unit.unit)
   const actionsInfo = unit && unit.unit.factionId === playerFaction
-    && renderActions(unit.unit, action, store)
+    && unit.unit.canPerformAction && renderActions(unit.unit, action, store)
 
   return (
     <Layout classes={[styles.main]}>
