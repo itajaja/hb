@@ -107,8 +107,6 @@ export default class Stageview extends React.Component<IProps, IState> {
     document.onkeypress = this.oldKeyPress
   }
 
-
-
   renderGameOver(winningFaction: string) {
     const { finishGame } = this.props.store
     const { playerFaction } = this.state
