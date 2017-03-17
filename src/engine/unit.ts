@@ -74,8 +74,10 @@ export default class Unit extends Thing {
     return this.game.factions.get(this.factionId)!
   }
 
-  get canPerformAction() {
-    return !this.actionPerformed && UnitState.Confused && UnitState.Sleeping
+  get canPerformAction(): boolean {
+    return !this.actionPerformed
+      && this.state !== UnitState.Confused
+      && this.state !== UnitState.Sleeping
   }
 
   takeDamage(damage: number) {
