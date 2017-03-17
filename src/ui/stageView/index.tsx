@@ -51,6 +51,7 @@ export interface IState {
 }
 
 export default class Stageview extends React.Component<IProps, IState> {
+  oldKeyPress: any
   store: Store
 
   constructor(props) {
@@ -70,7 +71,43 @@ export default class Stageview extends React.Component<IProps, IState> {
     map.setAttribute(
       'viewBox', `${x - 10} ${y - 10} ${width + 20} ${height + 20}`,
     )
+    this.oldKeyPress = document.onkeypress
+    document.onkeypress = this.onKeyPress
   }
+
+  onKeyPress = (e: KeyboardEvent) => {
+    const { game, playerFaction, selection } = this.state
+    const unit = selection && selection.unit && selection.unit.unit
+    const action = selection && selection.unit && selection.unit.action
+    const int = parseInt(e.key, 10) - 1
+
+    if (e.key === ' ' && !action) {
+      const isAval = u => u.canPerformAction || u.mp > 0
+
+      const playerUnits = game.factionUnits[playerFaction]
+      const currentUnitIndex = playerUnits.findIndex(u =>
+        u.id === (unit && unit.id),
+      )
+      const nextAvailableUnit = playerUnits.find(
+        (u, i) => isAval(u) && i > currentUnitIndex,
+      ) || playerUnits.find(isAval)
+      if (nextAvailableUnit) {
+        this.store.selectCell(game.map.cellAt(nextAvailableUnit.pos))
+        e.preventDefault()
+      }
+    } else if (
+      unit && unit.factionId === playerFaction && unit.actions[int]
+      && unit.canPerformAction
+    ) {
+      this.store.selectAction(unit.actions[int])
+    }
+  }
+
+  componentWillUnmount() {
+    document.onkeypress = this.oldKeyPress
+  }
+
+
 
   renderGameOver(winningFaction: string) {
     const { finishGame } = this.props.store
