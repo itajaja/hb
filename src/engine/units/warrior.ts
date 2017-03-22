@@ -1,5 +1,5 @@
 import Guard from '../actions/guard'
-import MeleeAttack from '../actions/meleeAttack'
+import { meleeAttack } from '../actions/meleeAttack'
 import { IUnitType } from '../unit'
 
 export default {
@@ -10,7 +10,9 @@ export default {
 
   hp: 10,
   mp: 3,
-  actions: [MeleeAttack, Guard],
+  mana: 0,
+  resistance: 0,
+  actions: [meleeAttack({ damage: 3 }), Guard],
 
   cost: 6,
 } as IUnitType

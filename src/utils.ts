@@ -25,3 +25,11 @@ export function debug(message?: any, ...optionalParams: any[]) {
   // tslint:disable-next-line:no-console
   console.log(message, ...optionalParams)
 }
+
+/**
+ * retrieve an item from an array with modulo index
+ */
+export function getItemCircular<T>(array: T[], index: number) {
+  const n = array.length
+  return array[((index % n) + n) % n]
+}

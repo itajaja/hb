@@ -9,6 +9,7 @@ export default class Heal extends UnitAction {
   params = {
     damage: -3,
   }
+  manaCost = 1
 
   performAction(target: Hex) {
     const targetUnit = this.game.map.cellAt(target).thing

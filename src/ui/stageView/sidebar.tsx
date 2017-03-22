@@ -24,6 +24,10 @@ const styles = StyleSheet.create({
     cursor: 'pointer',
     display: 'inline-block',
   },
+  disabledAction: {
+    cursor: 'not-allowed',
+    filter: 'blur(1px)',
+  },
   selectedAction: {
     background: style.gold,
   },
@@ -40,12 +44,17 @@ function renderActionButton(
   action: UnitAction, selectedAction: UnitAction | undefined, store: Store,
 ) {
   const isSelected = action === selectedAction
+  const classes = css(
+    styles.button,
+    isSelected && styles.selectedAction,
+    !action.canExecute && styles.disabledAction,
+  )
 
   return (
     <span
       key={action.name}
-      onClick={() => store.selectAction(action)}
-      className={css(styles.button, isSelected && styles.selectedAction)}
+      onClick={action.canExecute ? () => store.selectAction(action) : undefined}
+      className={classes}
     >
       {action.name}
     </span>
@@ -70,6 +79,10 @@ function renderUnitInfo(unit: Unit) {
       hp: {unit.hp}/{unit.type.hp}
       <br />
       mp: {unit.mp}/{unit.type.mp}
+      <br />
+      mana: {unit.mana}/{unit.type.mana}
+      <br />
+      resistance: {unit.resistance}
     </div>
   )
 }

@@ -3,12 +3,11 @@ import * as React from 'react'
 
 import levels from '../../content/levels'
 import { IUnitType } from '../../engine/unit'
-import Layout from '../components/layout'
 import Screen from '../components/screen'
-import unitGlyph from '../components/unitGlyph'
 import MainStore from '../mainStore'
 import style from '../utils/style'
 import ShopDialog from './shopDialog'
+import Unit from './unit'
 
 const styles = StyleSheet.create({
   main: {
@@ -26,7 +25,10 @@ const styles = StyleSheet.create({
   },
   unit: {
     padding: 10,
-    fontSize: 30,
+    width: 50,
+    height: 50,
+    fill: style.textColor,
+    stroke: 'black',
   },
 })
 
@@ -59,11 +61,7 @@ export default class MainView extends React.Component<IProps, IState> {
   }
 
   renderPartyUnit(unit: IUnitType, idx: number) {
-    return (
-      <span className={css(styles.unit)} key={idx}>
-        {unitGlyph(unit)}
-      </span>
-    )
+    return <Unit unitType={unit} key={idx} />
   }
 
 renderShop() {
@@ -89,9 +87,9 @@ render() {
         <h1>HB</h1>
         <h2>Campaign</h2>
         {levels.map(this.renderLevelButton)}
-        <Layout direction="row" justify="center" wrap="wrap">
+        <div>
           {store.state.party.map(this.renderPartyUnit)}
-        </Layout>
+        </div>
         <h2
           onClick={() => this.setState({ showShop: true })}
           className={css(styles.button)}

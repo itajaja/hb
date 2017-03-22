@@ -57,7 +57,12 @@ export default class Store extends BaseStore<IState> {
     this.set({ selection, hover: undefined })
   }
 
-  hover = (cell: ICell) => {
+  hover = (cell: ICell | null) => {
+    if (!cell) {
+      this.set({ hover: undefined })
+      return
+    }
+
     const { selection } = this.state
     const unit = selection && selection.unit
     const action = unit && unit.action

@@ -139,7 +139,7 @@ export default class Stageview extends React.Component<IProps, IState> {
         {dialog}
         <Layout justify="center" grow>
           <div className={css(styles.mapContainer)}>
-            <svg ref="map">
+            <svg ref="map" onMouseOut={() => this.store.hover(null)}>
               <g>
                 ${this.state.game.map.cells.map(c =>
                   <Cell store={this.store} cell={c} key={c.pos.toString()} />,

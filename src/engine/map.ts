@@ -28,7 +28,7 @@ export interface IMap {
 
   cellAt(hex: Hex): ICell
 
-  thingsInRange(hex: Hex, radius: number): IThing[]
+  thingsInRange(hex: Hex, radius: number, innerRadius?: number): IThing[]
 
   /**
    * returns the flooded paths
@@ -119,8 +119,8 @@ export default class HexMap implements IMap {
     return { paths: Array.from(bag.values()) }
   }
 
-  thingsInRange(hex: Hex, radius: number): IThing[] {
-    return hex.range(radius)
+  thingsInRange(hex: Hex, radius: number, innerRadius?: number): IThing[] {
+    return hex.range(radius, innerRadius)
       .filter(this.isIn)
       .map(this.cellAt)
       .filter(c => c.thing)

@@ -1,18 +1,10 @@
 import * as anime from 'animejs'
-import { css, StyleSheet } from 'aphrodite'
 import * as React from 'react'
 
 import { UnitAction } from '../../engine/actions/action'
 import EUnit from '../../engine/unit'
 import Bar from './bar'
 import unitGlyph from './unitGlyph'
-
-const styles = StyleSheet.create({
-  main: {
-    textAnchor: 'middle',
-    dominantBaseline: 'central',
-  },
-})
 
 interface IProps {
   unit: EUnit,
@@ -63,21 +55,24 @@ export default class Unit extends React.Component<IProps, {}> {
     const { unit } = this.props
     const barProps = { x: -10, height: 1, width: 20, c1: 'black' }
 
+    const style = {
+      transform: 'scaleY(.07) scaleX(.07)',
+      stroke: unit.faction.color,
+      strokeWidth: 3,
+    }
     return (
       <g ref="main">
-        <text
-          className={css(styles.main)}
-          fontSize="10"
-          fill={unit.faction.color}
-          style={{
-            // tslint:disable-next-line:max-line-length
-            textShadow: `black 0 0 5px, ${unit.faction.color} 0 0 10em, ${unit.faction.color} 0 0 10em`,
-          }}
-        >
-          {unitGlyph(unit.type)}  
-        </text>
-        <Bar {...barProps} y={9} c2={'green'} value={unit.hp / unit.type.hp} />
-        <Bar {...barProps} y={10} c2={'blue'} value={unit.mp / unit.type.mp} />
+        <g style={style}>
+          {unitGlyph(unit.type)}
+        </g>
+        <Bar {...barProps} y={9} c2={'red'} value={unit.hp / unit.type.hp} />
+        <Bar {...barProps} y={10} c2={'green'} value={unit.mp / unit.type.mp} />
+        {unit.type.mana > 0 && <Bar
+          {...barProps}
+          y={11}
+          c2={'blue'}
+          value={unit.mana / unit.type.mana}
+        />}
       </g>
     )
   }

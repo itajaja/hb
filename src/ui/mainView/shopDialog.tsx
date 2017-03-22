@@ -5,9 +5,9 @@ import { IUnitType } from '../../engine/unit'
 import * as units from '../../engine/units'
 import Dialog from '../components/dialog'
 import Layout from '../components/layout'
-import unitGlyph from '../components/unitGlyph'
 import MainStore from '../mainStore'
 import style from '../utils/style'
+import Unit from './unit'
 
 const styles = StyleSheet.create({
   main: {
@@ -22,14 +22,14 @@ const styles = StyleSheet.create({
     cursor: 'pointer',
     ':hover': {
       color: 'white',
+      stroke: 'white',
     },
   },
   blockedLevel: {
     opacity: .6,
   },
-  unit: {
-    padding: 10,
-    fontSize: 30,
+  description: {
+    paddingTop: 10,
   },
 })
 
@@ -40,6 +40,7 @@ interface IProps {
 
 interface IState {
   cart: IUnitType[]
+  hoveredUnit?: IUnitType,
 }
 
 // TODO better style for this
@@ -64,11 +65,7 @@ export default class MainView extends React.Component<IProps, IState> {
   }
 
   renderUnit = (unit: IUnitType) => {
-    return (
-      <span className={css(styles.unit)}>
-        {unitGlyph(unit)}
-      </span>
-    )
+    return <Unit unitType={unit} />
   }
 
   renderUnitButton = (unit: IUnitType, idx: number) => {
@@ -77,6 +74,7 @@ export default class MainView extends React.Component<IProps, IState> {
         className={css(styles.button)}
         key={idx}
         onClick={() => this.onSelectUnit(unit)}
+        onMouseOver={() => this.setState({ hoveredUnit: unit })}
       >
         <Layout>
           {this.renderUnit(unit)}
@@ -92,6 +90,7 @@ export default class MainView extends React.Component<IProps, IState> {
   }
 
   render() {
+    const { hoveredUnit } = this.state
     const { onCancel } = this.props
 
     return (
@@ -102,6 +101,9 @@ export default class MainView extends React.Component<IProps, IState> {
           <Layout direction="row" justify="space-around">
             {Object.keys(units).map(i => units[i]).map(this.renderUnitButton)}
           </Layout>
+          <div className={css(styles.description)}>
+            {hoveredUnit && hoveredUnit.description}
+          </div>
           <h3>Selected</h3>
           <Layout direction="row" wrap="wrap" justify="center" grow>
             {this.state.cart.map((u, idx) => (

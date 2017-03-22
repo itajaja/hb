@@ -2,6 +2,7 @@ import Game from '../game'
 import Hex from '../hex'
 import Unit from '../unit'
 
+// TODO Not sure how to use this
 // tslint:disable-next-line:no-empty-interface
 interface IActionResult {
 }
@@ -26,11 +27,26 @@ export class UnitAction implements IAction {
 
   params: any = {}
 
-  constructor(public game: Game, public unit: Unit) {}
+  manaCost: number = 0
+
+  constructor(public game: Game, public unit: Unit) { }
+
+  get isAvailable() {
+    return this.unit.mana >= this.manaCost
+  }
+
+  get canExecute() {
+    return this.isAvailable && this.unit.canPerformAction
+  }
 
   execute(target: Hex): IActionResult {
+    if (!this.canExecute) {
+      return {} // TODO Should we be smarter here?
+    }
+
     this.unit.actionPerformed = true
     this.unit.mp = 0
+    this.unit.mana -= this.manaCost
 
     const result = this.performAction(target)
     this.game.emit('performAction', this)

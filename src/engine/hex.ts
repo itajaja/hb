@@ -10,14 +10,21 @@ import assert from './assert'
  */
 
 export default class Hex {
-  constructor(private _q: number, private _r: number) {}
+  private _repr: string
+  constructor(private _q: number, private _r: number) {
+    this._repr = `${this.q},${this.r}`
+  }
 
   get q() { return this._q }
   get r() { return this._r }
   get s() { return -this.q - this.r }
 
   toString() {
-    return `${this.q},${this.r}`
+    return this._repr
+  }
+
+  equals(x: Hex) {
+    return this.toString() === x.toString()
   }
 
   add(x: Hex) {

@@ -25,10 +25,12 @@ export interface IUnitType {
 
   hp: number
   mp: number
+  mana: number
+  resistance: number
 
   actions: Array<typeof UnitAction>,
 
-  cost: number,
+  cost: number
 }
 
 export default class Unit extends Thing {
@@ -42,6 +44,7 @@ export default class Unit extends Thing {
 
   hp: number
   mp: number
+  mana: number
 
   actionPerformed = false
 
@@ -59,6 +62,7 @@ export default class Unit extends Thing {
     this.type = type
     this.hp = type.hp
     this.mp = type.mp
+    this.mana = type.mana
     this.game = game
     this.actions = type.actions.map(Action => new Action(game, this))
   }
@@ -80,6 +84,10 @@ export default class Unit extends Thing {
       && this.state !== UnitState.Sleeping
   }
 
+  get resistance(): number {
+    return this.type.resistance + this.state === UnitState.Guard ? 1 : 0
+  }
+
   takeDamage(damage: number) {
     if (damage === 0) {
       return
@@ -90,11 +98,10 @@ export default class Unit extends Thing {
       this.hp = Math.min(this.type.hp, this.hp + heal)
       return
     }
-    this.game.emit('takeDamage', this)
+
     // damage
-    if (this.state === UnitState.Guard) {
-      damage--
-    }
+    this.game.emit('takeDamage', this)
+    damage -= this.resistance
 
     this.hp = Math.max(this.hp - damage, 0)
 
@@ -111,7 +118,7 @@ export default class Unit extends Thing {
   }
 
   moveTargets(): Hex[] {
-    if (this.mp <= 0) {
+    if (this.mp <= 0 || !this.canPerformAction) {
       return []
     }
 
