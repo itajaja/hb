@@ -5,6 +5,11 @@ import Icon from './icon'
 
 const unitGlyphs: {[idx: string]: keyof typeof icons} = {
   archer: 'highShot',
+  barbarian: 'vikingHead',
+  catapult: 'catapult',
+  cleric: 'womanElfFace',
+  horseman: 'horseHead',
+  knight: 'visoredHelm',
   mage: 'wizardFace',
   warrior: 'hornedHelm',
 }

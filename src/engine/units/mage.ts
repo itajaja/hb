@@ -1,6 +1,6 @@
 import Fireball from '../actions/fireball'
-import Heal from '../actions/heal'
 import { meleeAttack } from '../actions/meleeAttack'
+import Teleport from '../actions/teleport'
 import { IUnitType } from '../unit'
 
 export default {
@@ -14,7 +14,7 @@ export default {
   mp: 2,
   mana: 6,
   resistance: 0,
-  actions: [meleeAttack({ damage: 2 }), Heal, Fireball],
+  actions: [meleeAttack({ damage: 2 }), Teleport, Fireball],
 
   cost: 10,
 } as IUnitType

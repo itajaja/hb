@@ -77,21 +77,9 @@ class MageAi extends UnitAi {
   }
 
   getAction() {
-    const heal = this.findTarget(
-      actions.Heal,
-      c => ( // a friendly unit with not max hp
-        this.ai.hasCellFriendlyUnit(c)
-        && (c.thing as Unit).hp < (c.thing as Unit).type.hp
-      ),
-    )
-    if (heal) {
-      return heal
-    }
     return this.findTarget(
       actions.Fireball,
-      c => ( // an enemy unit not too close
-        this.ai.hasCellEnemyUnit(c) && !this.unit.pos.isNeighbor(c.pos)
-      ),
+      c => this.ai.hasCellEnemyUnit(c) && !this.unit.pos.isNeighbor(c.pos),
     )
   }
 

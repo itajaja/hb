@@ -1,3 +1,8 @@
 export { default as archer } from './archer'
+export { default as barbarian } from './barbarian'
+export { default as catapult } from './catapult'
+export { default as cleric } from './cleric'
+export { default as horseman } from './horseman'
+export { default as knight } from './knight'
 export { default as mage } from './mage'
 export { default as warrior } from './warrior'
