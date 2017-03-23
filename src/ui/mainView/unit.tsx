@@ -2,7 +2,7 @@ import { css, StyleSheet } from 'aphrodite'
 import * as React from 'react'
 
 import { IUnitType } from '../../engine/unit'
-import unitGlyph from '../components/unitGlyph'
+import UnitGlyph from '../components/unitGlyph'
 import style from '../utils/style'
 
 const styles = StyleSheet.create({
@@ -22,7 +22,7 @@ interface IProps {
 export default function Unit({ unitType }: IProps) {
   return (
     <svg viewBox="-150 -150 300 300" className={css(styles.unit)}>
-      {unitGlyph(unitType)}
+      <UnitGlyph unitType={unitType} />
     </svg>
   )
 }

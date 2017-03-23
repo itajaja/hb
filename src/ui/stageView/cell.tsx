@@ -5,6 +5,7 @@ import { ICell, Terrain } from '../../engine/map'
 import EUnit from '../../engine/unit'
 import Unit from '../components/unit'
 import style from '../utils/style'
+import transform from '../utils/transform'
 import Store from './store'
 
 export const cellSize = 20
@@ -46,17 +47,14 @@ const terrainStyles = StyleSheet.create({
 const overlayStyles = StyleSheet.create({
   main: {
     fill: 'transparent',
-
-    ':hover': {
-      stroke: 'rgba(0, 0, 0, 0.3)',
-    },
   },
 
   selected: {
     stroke: style.gold,
-    ':hover': {
-      stroke: style.gold,
-    },
+  },
+
+  hover: {
+    stroke: 'rgba(0, 0, 0, 0.3)',
   },
 
   target: {
@@ -69,10 +67,6 @@ const overlayStyles = StyleSheet.create({
     fill: 'rgba(255, 255, 255, 0.1)', stroke: 'rgba(255, 255, 255, 0.1)',
   },
 })
-
-function translate(x, y) {
-  return `translate(${x},${y})`
-}
 
 interface IProps {
   store: Store,
@@ -106,6 +100,7 @@ export default class Cell extends React.Component<IProps, {}> {
     const moveTarget = !action && unit && unit.paths[posId]
       || !unit && hover && hover.unit && hover.unit.paths[posId]
     const selected = selection && selection.cell.pos.toString() === posId
+    const hovered = hover && hover.cell.pos.toString() === posId
 
     const terrainClass = css(styles.terrain, terrainStyles[cell.terrain])
     const overlayClass = css(
@@ -114,19 +109,20 @@ export default class Cell extends React.Component<IProps, {}> {
       actionArea && overlayStyles.area,
       moveTarget && overlayStyles.moveTarget,
       selected && overlayStyles.selected,
+      hovered && overlayStyles.hover,
     )
 
     const { x, y } = hexCenter(pos, cellSize)
 
     return (
       <g
-        transform={translate(x, y)}
+        transform={transform.translate(x, y).toString()}
         onMouseOver={this.onMouseOver}
         onClick={this.onClick}
       >
         <polygon className={terrainClass} points={HEX_POINTS} />
-        {thing && thing instanceof EUnit && <Unit unit={thing} />}
         <polygon className={overlayClass} points={INNER_HEX_POINTS} />
+        {thing && thing instanceof EUnit && <Unit unit={thing} />}
       </g>
     )
   }

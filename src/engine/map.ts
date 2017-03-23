@@ -82,7 +82,12 @@ export default class HexMap implements IMap {
   }
 
   get cells() {
-    return CENTER.range(this.size).map(this.cellAt)
+    return CENTER.range(this.size).map(this.cellAt).sort((a, b) => {
+      if (a.pos.q === b.pos.q) {
+        return a.pos.r > b.pos.r ? 1 : -1
+      }
+      return a.pos.q > b.pos.q ? 1 : -1
+    })
   }
 
   flood(

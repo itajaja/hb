@@ -10,4 +10,6 @@ export default {
 
   textColor: colors.pink,
   border: `10px double ${colors.gold}`,
+
+  isometricScaleY: 0.8,
 }

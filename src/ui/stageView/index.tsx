@@ -10,11 +10,16 @@ import Dialog from '../components/dialog'
 import Layout from '../components/layout'
 import Screen from '../components/screen'
 import MainStore from '../mainStore'
+import style from '../utils/style'
+import transform from '../utils/transform'
 import Cell from './cell'
 import Sidebar from './sidebar'
 import Store from './store'
 
 const styles = StyleSheet.create({
+  map: {
+    transform: transform.scaleY(style.isometricScaleY).toString(),
+  },
   mapContainer: {
     overflow: 'auto',
   },
@@ -140,7 +145,7 @@ export default class Stageview extends React.Component<IProps, IState> {
         <Layout justify="center" grow>
           <div className={css(styles.mapContainer)}>
             <svg ref="map" onMouseOut={() => this.store.hover(null)}>
-              <g>
+              <g className={css(styles.map)}>
                 ${this.state.game.map.cells.map(c =>
                   <Cell store={this.store} cell={c} key={c.pos.toString()} />,
                 )}
