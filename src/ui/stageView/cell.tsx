@@ -3,10 +3,10 @@ import * as React from 'react'
 
 import { ICell, Terrain } from '../../engine/map'
 import EUnit from '../../engine/unit'
-import Unit from '../components/unit'
 import style from '../utils/style'
 import transform from '../utils/transform'
 import Store from './store'
+import Unit from './unit'
 
 export const cellSize = 20
 

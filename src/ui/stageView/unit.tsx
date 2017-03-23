@@ -4,10 +4,10 @@ import * as React from 'react'
 
 import { UnitAction } from '../../engine/actions/action'
 import EUnit from '../../engine/unit'
+import Bar from '../components/bar'
+import UnitGlyph from '../components/unitGlyph'
 import style from '../utils/style'
 import transform from '../utils/transform'
-import Bar from './bar'
-import UnitGlyph from './unitGlyph'
 
 const styles = StyleSheet.create({
   container: {
