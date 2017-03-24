@@ -12,10 +12,10 @@ export default class MeleeAttack extends UnitAction {
 
   params: IParams
 
-  performAction(target: Hex) {
+  async performAction(target: Hex) {
     const targetUnit = this.game.map.cellAt(target).thing
     if (targetUnit instanceof Unit) {
-      targetUnit.takeDamage(this.params.damage)
+      await targetUnit.takeDamage(this.params.damage)
     }
 
     return {}

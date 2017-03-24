@@ -36,20 +36,20 @@ export default class OpponentAi {
       .some(this.hasCellEnemyUnit)
   }
 
-  tryExecuteUnitAction(unit: Unit, action: (() => void) | null) {
+  async tryExecuteUnitAction(unit: Unit, action: (() => Promise<any>) | null) {
     this.update()
     if (action && unit.canPerformAction) {
-      action()
+      await action()
     }
     this.update()
   }
 
-  moveUnit = (unit: Unit) => {
+  moveUnit = async (unit: Unit) => {
     debug('ai: moving unit', unit)
     const { game } = this.store.state
     const unitAi = new unitAis[unit.type.name](unit, game.map, this)
 
-    this.tryExecuteUnitAction(unit, unitAi.getAction())
+    await this.tryExecuteUnitAction(unit, unitAi.getAction())
 
     for (const p of unitAi.findPath()) {
       // we have to recompute the move targets every cycle because stuff
@@ -62,10 +62,10 @@ export default class OpponentAi {
       }
       unit.move(p)
 
-      this.tryExecuteUnitAction(unit, unitAi.getAction())
+      await this.tryExecuteUnitAction(unit, unitAi.getAction())
     }
 
-    this.tryExecuteUnitAction(unit, unitAi.getLastAction())
+    await this.tryExecuteUnitAction(unit, unitAi.getLastAction())
 
     this.update()
   }
@@ -76,7 +76,7 @@ export default class OpponentAi {
       const { id } = this.store.state.game.currenFaction
       debug('ai: perform turn for faction', id)
       const units = game.factionUnits[id]
-      await intervalForeach(units, this.moveUnit, 1000)
+      await intervalForeach(units, this.moveUnit, 200)
 
       this.store.endTurn()
     } catch (e) {

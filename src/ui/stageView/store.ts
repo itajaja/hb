@@ -26,14 +26,14 @@ export default class Store extends BaseStore<IState> {
     }
   }
 
-  selectCell = (cell: ICell) => {
+  selectCell = async (cell: ICell) => {
     const { selection, playerFaction } = this.state
     const unit = selection && selection.unit
     const action = unit && unit.action
 
     let newSelection
     if (action && action.targets[cell.pos.toString()]) {
-      action.action.execute(cell.pos)
+      await action.action.execute(cell.pos)
     } else if (
       !action && unit && unit.unit.factionId === playerFaction
       && unit.paths[cell.pos.toString()]

@@ -38,9 +38,9 @@ abstract class UnitAi {
 
   abstract findPath(): Hex[]
 
-  abstract getAction(): (() => void) | null
+  abstract getAction(): (() => Promise<any>) | null
 
-  abstract getLastAction(): (() => void) | null
+  abstract getLastAction(): (() => Promise<any>) | null
 }
 
 class WarriorAi extends UnitAi {
@@ -48,11 +48,11 @@ class WarriorAi extends UnitAi {
     return this.findPathTowardsEnemy()
   }
 
-  getAction(): (() => void) | null {
+  getAction() {
     return this.findTarget(actions.MeleeAttack, this.ai.hasCellEnemyUnit)
   }
 
-  getLastAction(): (() => void) | null {
+  getLastAction() {
     return () => this.unit.getAction(actions.Guard).execute(this.unit.pos)
   }
 }
@@ -62,11 +62,11 @@ class ArcherAi extends UnitAi {
     return this.findPathTowardsEnemy()
   }
 
-  getAction(): (() => void) | null {
+  getAction() {
     return this.findTarget(actions.RangedAttack, this.ai.hasCellEnemyUnit)
   }
 
-  getLastAction(): (() => void) | null {
+  getLastAction() {
     return this.findTarget(actions.MeleeAttack, this.ai.hasCellEnemyUnit)
   }
 }
@@ -76,7 +76,7 @@ class MageAi extends UnitAi {
     return this.findPathTowardsEnemy()
   }
 
-  getAction(): (() => void) | null {
+  getAction() {
     const heal = this.findTarget(
       actions.Heal,
       c => ( // a friendly unit with not max hp
@@ -95,7 +95,7 @@ class MageAi extends UnitAi {
     )
   }
 
-  getLastAction(): (() => void) | null {
+  getLastAction() {
     return this.findTarget(actions.MeleeAttack, this.ai.hasCellEnemyUnit)
   }
 }

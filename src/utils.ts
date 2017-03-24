@@ -17,7 +17,7 @@ export async function intervalForeach<T>(
 ): Promise<void> {
   for (const item of array) {
     await pSetTimeout(timeout)
-    f(item)
+    await f(item)
   }
 }
 

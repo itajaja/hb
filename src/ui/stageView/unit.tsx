@@ -39,28 +39,28 @@ export default class Unit extends React.Component<IProps, {}> {
     this.listeners.forEach(unsubscribe => unsubscribe())
   }
 
-  onPerformAction = (action: UnitAction) => {
+  onPerformAction = async (action: UnitAction) => {
     if (action.unit.id === this.props.unit.id) {
-      anime({
+      return await anime({
         targets: [this.refs.main],
         translateY: '-10',
         direction: 'alternate',
         duration: 350,
         easing: 'easeOutQuad',
-      })
+      }).finished
     }
   }
 
-  onTakeDamage = (unit: EUnit) => {
+  onTakeDamage = async (unit: EUnit) => {
     if (unit.id === this.props.unit.id) {
-      anime({
+      await anime({
         targets: [this.refs.main],
         opacity: 0,
         direction: 'alternate',
         loop: 8,
         easing: 'easeInOutQuad',
         duration: 100,
-      })
+      }).finished
     }
   }
 

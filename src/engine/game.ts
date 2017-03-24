@@ -25,7 +25,7 @@ export default class Game {
 
   map: IMap
 
-  private subs: {[idx: string]: Array<(payload) => void>} = {}
+  private subs: {[idx: string]: Array<(payload) => Promise<void>>} = {}
 
   constructor({ factions, map }: IGameConfig) {
     this.map = map
@@ -116,19 +116,19 @@ export default class Game {
   }
 
   // event handling
-  emit(eventName: string, payload) {
+  async emit(eventName: string, payload) {
     debug('game: emitting event', eventName, payload)
     const subs = this.subs[eventName] || []
-    subs.forEach(cb => cb(payload))
+    await Promise.all(subs.map(cb => cb(payload)))
   }
 
-  listen(eventName: string, cb: (payload) => void) {
+  listen(eventName: string, cb: (payload) => Promise<void>) {
     this.subs[eventName] = this.subs[eventName] || []
     this.subs[eventName].push(cb)
 
     return () => {
       const index = this.subs[eventName].indexOf(cb)
-      assert(index >= 0, 'the element should be there')
+      assert(index >= 0, 'the listener should be there')
       this.subs[eventName].splice(index, 1)
     }
   }

@@ -39,7 +39,7 @@ export class UnitAction implements IAction {
     return this.isAvailable && this.unit.canPerformAction
   }
 
-  execute(target: Hex): IActionResult {
+  async execute(target: Hex): Promise<IActionResult> {
     if (!this.canExecute) {
       return {} // TODO Should we be smarter here?
     }
@@ -48,8 +48,8 @@ export class UnitAction implements IAction {
     this.unit.mp = 0
     this.unit.mana -= this.manaCost
 
-    const result = this.performAction(target)
-    this.game.emit('performAction', this)
+    await this.game.emit('performAction', this)
+    const result = await this.performAction(target)
     return result
   }
 

@@ -88,7 +88,7 @@ export default class Unit extends Thing {
     return this.type.resistance + this.state === UnitState.Guard ? 1 : 0
   }
 
-  takeDamage(damage: number) {
+  async takeDamage(damage: number) {
     if (damage === 0) {
       return
     }
@@ -100,7 +100,7 @@ export default class Unit extends Thing {
     }
 
     // damage
-    this.game.emit('takeDamage', this)
+    await this.game.emit('takeDamage', this)
     damage -= this.resistance
 
     this.hp = Math.max(this.hp - damage, 0)
