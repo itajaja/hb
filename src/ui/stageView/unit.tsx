@@ -17,6 +17,11 @@ const styles = StyleSheet.create({
     transform: transform.scaleY(SCALE_FACTOR).scaleX(SCALE_FACTOR).string(),
     strokeWidth: '3%',
   },
+  backBarStyle: {
+    stroke: 'black',
+    strokeWidth: '.5px',
+    fill: 'black',
+  },
 })
 
 interface IProps {
@@ -66,7 +71,9 @@ export default class Unit extends React.Component<IProps, {}> {
 
   render() {
     const { unit } = this.props
-    const barProps = { x: -10, height: 1, width: 2, c1: 'black' }
+    const barProps = {
+      x: -5, height: 1, width: 10, backClasses: [styles.backBarStyle],
+    }
 
     const style = {
       stroke: unit.faction.color,
@@ -77,19 +84,26 @@ export default class Unit extends React.Component<IProps, {}> {
           <g className={css(styles.unit)} style={style}>
             <UnitGlyph unitType={unit.type} />
           </g>
-          <Bar {...barProps} y={1} c2={'red'} value={unit.hp / unit.type.hp} />
-          <Bar
-            {...barProps}
-            y={2}
-            c2={'darkgreen'}
-            value={unit.mp / unit.type.mp}
-          />
-          {unit.type.mana > 0 && <Bar
-            {...barProps}
-            y={3}
-            c2={'blue'}
-            value={unit.mana / unit.type.mana}
-          />}
+          <g transform="rotate(-90)">
+            <Bar
+              {...barProps}
+              y={10}
+              fill="red"
+              value={unit.hp / unit.type.hp}
+            />
+            <Bar
+              {...barProps}
+              y={11}
+              fill="darkgreen"
+              value={unit.mp / unit.type.mp}
+            />
+            {unit.type.mana > 0 && <Bar
+              {...barProps}
+              y={12}
+              fill="blue"
+              value={unit.mana / unit.type.mana}
+            />}
+          </g>
         </g>
       </g>
     )
