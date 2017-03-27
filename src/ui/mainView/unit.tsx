@@ -2,6 +2,7 @@ import { css, StyleSheet } from 'aphrodite'
 import * as React from 'react'
 
 import { IUnitType } from '../../engine/unit'
+import { ICON_BBOX } from '../components/icon'
 import UnitGlyph from '../components/unitGlyph'
 import style from '../utils/style'
 
@@ -21,7 +22,7 @@ interface IProps {
 
 export default function Unit({ unitType }: IProps) {
   return (
-    <svg viewBox="-150 -150 300 300" className={css(styles.unit)}>
+    <svg viewBox={ICON_BBOX} className={css(styles.unit)}>
       <UnitGlyph unitType={unitType} />
     </svg>
   )

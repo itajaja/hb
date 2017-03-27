@@ -3,6 +3,7 @@ import * as React from 'react'
 
 import { IUnitType } from '../../engine/unit'
 import * as units from '../../engine/units'
+import { objectValues } from '../../utils'
 import Dialog from '../components/dialog'
 import Layout from '../components/layout'
 import MainStore from '../mainStore'
@@ -98,9 +99,11 @@ export default class MainView extends React.Component<IProps, IState> {
         <Dialog.Title>SHOP</Dialog.Title>
         <Dialog.Content>
           <h3>Select</h3>
-          <Layout direction="row" justify="space-around">
-            {Object.keys(units).map(i => units[i]).map(this.renderUnitButton)}
-          </Layout>
+          <div>
+            <Layout direction="row" justify="space-around">  
+              {objectValues(units as any).map(this.renderUnitButton)}  
+            </Layout>
+          </div>  
           <div className={css(styles.description)}>
             {hoveredUnit && hoveredUnit.description}
           </div>

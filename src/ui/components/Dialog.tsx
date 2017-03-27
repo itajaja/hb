@@ -8,16 +8,18 @@ import withStyle from './withStyle'
 const styles = StyleSheet.create({
   main: {
     textAlign: 'center',
-    position: 'fixed',
-    top: 100, left: 100, right: 100, bottom: 100,
+    position: 'absolute',
+    left: 100, right: 100,
     background: style.darkGrey,
     border: style.border,
+    margin: '100px 0',
   },
   backdrop: {
     position: 'fixed',
     top: 0, left: 0, right: 0, bottom: 0,
     background: 'rgba(128, 128, 128, 0.5)',
     zIndex: 1,
+    overflow: 'auto',
   },
   controls: {
     borderTop: style.border,
@@ -32,9 +34,12 @@ const styles = StyleSheet.create({
   },
   content: {
     padding: 20,
+    overflow: 'auto',
   },
   title: {
     borderBottom: style.border,
+    paddingBottom: 20,
+    marginBottom: 0,
   },
 })
 

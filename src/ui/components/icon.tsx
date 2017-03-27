@@ -7,7 +7,7 @@ export const ICON_SIZE = 512
 const TRANSLATE_TO_CENTER = transform.translate(-ICON_SIZE / 2, -ICON_SIZE / 2)
   .string()
 // tslint:disable-next-line:max-line-length
-export const ICON_BBOX = `${-ICON_SIZE / 2} ${-ICON_SIZE / 2} ${ICON_SIZE / 2} ${ICON_SIZE / 2}`
+export const ICON_BBOX = `${-ICON_SIZE / 2} ${-ICON_SIZE / 2} ${ICON_SIZE} ${ICON_SIZE}`
 
 type IProps = React.HTMLAttributes<{}> & React.SVGProps & {
   icon: keyof typeof icons,
