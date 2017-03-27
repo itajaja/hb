@@ -33,3 +33,10 @@ export function getItemCircular<T>(array: T[], index: number) {
   const n = array.length
   return array[((index % n) + n) % n]
 }
+
+/**
+ * Object.values functionality
+ */
+export function objectValues<T>(o: {[idx: string]: T}): T[] {
+  return Object.keys(o).map(k => o[k])
+}

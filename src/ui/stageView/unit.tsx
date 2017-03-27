@@ -5,17 +5,17 @@ import * as React from 'react'
 import { UnitAction } from '../../engine/actions/action'
 import EUnit from '../../engine/unit'
 import Bar from '../components/bar'
+import { ICON_SIZE } from '../components/icon'
 import UnitGlyph from '../components/unitGlyph'
-import style from '../utils/style'
 import transform from '../utils/transform'
+import { HEX_SIZE } from './iso'
+
+const SCALE_FACTOR = HEX_SIZE / ICON_SIZE
 
 const styles = StyleSheet.create({
-  container: {
-    transform: transform.scaleY(1 / style.isometricScaleY).toString(),
-  },
   unit: {
-    transform: transform.scaleY(.1).scaleX(.1).toString(),
-    strokeWidth: 3,
+    transform: transform.scaleY(SCALE_FACTOR).scaleX(SCALE_FACTOR).string(),
+    strokeWidth: '3%',
   },
 })
 
@@ -66,27 +66,27 @@ export default class Unit extends React.Component<IProps, {}> {
 
   render() {
     const { unit } = this.props
-    const barProps = { x: -10, height: 1, width: 20, c1: 'black' }
+    const barProps = { x: -10, height: 1, width: 2, c1: 'black' }
 
     const style = {
       stroke: unit.faction.color,
     }
     return (
-      <g className={css(styles.container)}>
+      <g>
         <g ref="main">
           <g className={css(styles.unit)} style={style}>
             <UnitGlyph unitType={unit.type} />
           </g>
-          <Bar {...barProps} y={9} c2={'red'} value={unit.hp / unit.type.hp} />
+          <Bar {...barProps} y={1} c2={'red'} value={unit.hp / unit.type.hp} />
           <Bar
             {...barProps}
-            y={10}
+            y={2}
             c2={'darkgreen'}
             value={unit.mp / unit.type.mp}
           />
           {unit.type.mana > 0 && <Bar
             {...barProps}
-            y={11}
+            y={3}
             c2={'blue'}
             value={unit.mana / unit.type.mana}
           />}

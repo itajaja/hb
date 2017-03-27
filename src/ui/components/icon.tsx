@@ -3,7 +3,7 @@ import * as React from 'react'
 import icons from '../assets/icons'
 import transform from '../utils/transform'
 
-const ICON_SIZE = 512
+export const ICON_SIZE = 512
 const TRANSLATE_TO_CENTER = transform.translate(-ICON_SIZE / 2, -ICON_SIZE / 2)
   .string()
 // tslint:disable-next-line:max-line-length

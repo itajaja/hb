@@ -10,16 +10,14 @@ import Dialog from '../components/dialog'
 import Layout from '../components/layout'
 import Screen from '../components/screen'
 import MainStore from '../mainStore'
-import style from '../utils/style'
-import transform from '../utils/transform'
-import Cell from './cell'
+import { HEX_SIZE } from './iso'
+import Map from './map'
+import Overlays from './overlays'
 import Sidebar from './sidebar'
 import Store from './store'
+import Things from './things'
 
 const styles = StyleSheet.create({
-  map: {
-    transform: transform.scaleY(style.isometricScaleY).toString(),
-  },
   mapContainer: {
     overflow: 'auto',
   },
@@ -72,9 +70,11 @@ export default class Stageview extends React.Component<IProps, IState> {
 
   componentDidMount() {
     const map = this.refs.map as SVGAElement
+    const svg = this.refs.svg as SVGAElement
     const { x, y, width, height } = map.getBBox()
-    map.setAttribute(
-      'viewBox', `${x - 10} ${y - 10} ${width + 20} ${height + 20}`,
+    svg.setAttribute(
+      // tslint:disable-next-line:max-line-length
+      'viewBox', `${x - HEX_SIZE} ${y - HEX_SIZE} ${width + HEX_SIZE * 2} ${height + HEX_SIZE * 2}`,
     )
     this.oldKeyPress = document.onkeypress
     document.onkeypress = this.onKeyPress
@@ -144,11 +144,13 @@ export default class Stageview extends React.Component<IProps, IState> {
         {dialog}
         <Layout justify="center" grow>
           <div className={css(styles.mapContainer)}>
-            <svg ref="map" onMouseOut={() => this.store.hover(null)}>
-              <g className={css(styles.map)}>
-                ${this.state.game.map.cells.map(c =>
-                  <Cell store={this.store} cell={c} key={c.pos.toString()} />,
-                )}
+            <svg ref="svg" onMouseOut={() => this.store.hover(null)}>
+              <g ref="map">
+                <Map store={this.store} />
+              </g>
+              <g style={{ pointerEvents: 'none' }}>
+                <Overlays store={this.store} />
+                <Things store={this.store} />
               </g>
             </svg>
           </div>

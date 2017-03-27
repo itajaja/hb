@@ -34,7 +34,7 @@ class Transformer {
     return this.chain(`rotate(${x}deg)`)
   }
 
-  toString() {
+  string() {
     return this.transforms
   }
 
