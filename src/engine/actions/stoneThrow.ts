@@ -13,19 +13,25 @@ export default class RangedAttack extends UnitAction {
 
   params: IParams
 
-  performAction(target: Hex) {
-    // target unit
-    const targetUnit = this.game.map.cellAt(target).thing
-    if (targetUnit instanceof Unit) {
-      targetUnit.takeDamage(this.params.damage)
-    }
-
-    // area damage
-    this.game.map.thingsInRange(target, this.params.area, 1).forEach(t => {
+  async hitCenter(target: Hex) {
+    const hits = this.game.map.thingsInRange(target, this.params.area, 1)
+    await Promise.all(hits.map(async t => {
       if (t instanceof Unit) {
-        t.takeDamage(1)
+        await t.takeDamage(1)
       }
-    })
+    }))
+  }
+
+  async hitArea(target: Hex) {
+    const targetUnit = this.game.map.cellAt(target).thing
+
+    if (targetUnit instanceof Unit) {
+      await targetUnit.takeDamage(this.params.damage)
+    }
+  }
+
+  async performAction(target: Hex) {
+    await Promise.all([this.hitCenter(target), this.hitArea(target)])
 
     return {}
   }
