@@ -48,6 +48,11 @@ export default class Hex {
     return this.neighbors.some(n => n.toString() === x.toString())
   }
 
+  getNeighborDirection(x: Hex): number {
+    assert(this.isNeighbor(x), 'Not a neighbor')
+    return directions.findIndex(d => this.add(d).equals(x))
+  }
+
   get neighbors() {
     return directions.map(d => this.add(d))
   }

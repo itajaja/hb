@@ -8,11 +8,13 @@ export default {
     + 'him very resistant to wounds and blows. His endurance in the '
     + 'battlefield is legenday',
 
-  hp: 12,
+  hp: 18,
   mp: 2,
   mana: 0,
   resistance: 1,
-  actions: [meleeAttack({ damage: 3 })],
+  actions: [
+    meleeAttack({ damage: 4 }),
+  ],
 
-  cost: 6,
+  cost: 13,
 } as IUnitType

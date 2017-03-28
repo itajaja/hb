@@ -70,11 +70,13 @@ function renderCellInfo(cell: ICell) {
 }
 
 function renderUnitInfo(unit: Unit) {
+  const statuses = Array.from(unit.state.keys()).map(s => UnitState[s])
+
   return (
     <div>
       Unit: {unit.type.name}
       <br />
-      Satus: {UnitState[unit.state]}
+      Satus: {statuses.join() || '—'}
       <br />
       hp: {unit.hp}/{unit.type.hp}
       <br />

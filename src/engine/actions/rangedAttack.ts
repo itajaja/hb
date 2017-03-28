@@ -4,6 +4,7 @@ import { UnitAction } from './action'
 
 interface IParams {
   damage: number
+  range: [number, number]
 }
 
 export default class RangedAttack extends UnitAction {
@@ -23,7 +24,8 @@ export default class RangedAttack extends UnitAction {
 
   targets() {
     const { pos } = this.unit
-    return pos.range(4, 2)
+    const [maxRange, minRange] = this.params.range
+    return pos.range(maxRange, minRange)
       .filter(this.game.map.isIn)
   }
 }

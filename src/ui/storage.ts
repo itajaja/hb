@@ -1,3 +1,4 @@
+import * as camelCase from 'lodash/camelCase'
 import * as store from 'store'
 
 import { IUnitType } from '../engine/unit'
@@ -36,7 +37,7 @@ export function load(): IStorage | null {
 export function save(data: IStorage): void {
   const rawData: IRawStorage = {
     levelReached: data.levelReached,
-    party: data.party.map(u => u.name.toLowerCase()),
+    party: data.party.map(u => camelCase(u.name)),
     money: data.money,
   }
   store.set(KEY, JSON.stringify(rawData))

@@ -78,7 +78,7 @@ export default class OpponentAi {
       const units = game.factionUnits[id]
       await intervalForeach(units, this.moveUnit, 200)
 
-      this.store.endTurn()
+      await this.store.endTurn()
     } catch (e) {
       if (e === 'GAME_OVER') {
         // pass

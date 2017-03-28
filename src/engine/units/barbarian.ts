@@ -12,7 +12,10 @@ export default {
   mp: 3,
   mana: 0,
   resistance: 0,
-  actions: [twoHandedSwordAttack({ damage: 3 }), meleeAttack({ damage: 3 })],
+  actions: [
+    twoHandedSwordAttack({ damage: 4 }),
+    meleeAttack({ damage: 4 }),
+  ],
 
-  cost: 6,
+  cost: 9,
 } as IUnitType

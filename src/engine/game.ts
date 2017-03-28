@@ -95,15 +95,16 @@ export default class Game {
     // do something to update the state globally
   }
 
-  prepareFactionTurn(faction: Faction) {
-    this.things.forEach(t => {
-      if (t instanceof Unit && t.factionId === faction.id) {
-        t.tickTurn()
+  async prepareFactionTurn(faction: Faction) {
+    const things = Array.from(this.things.values())
+    for (const thing of things) {
+      if (thing instanceof Unit && thing.factionId === faction.id) {
+        await thing.tickTurn()
       }
-    })
+    }
   }
 
-  endTurn() {
+  async endTurn() {
     this.currentFactionIndex++
     if (this.currentFactionIndex === this.factions.size) {
       this.finishEpoch()
@@ -112,7 +113,7 @@ export default class Game {
       this.epoch++
     }
 
-    this.prepareFactionTurn(this.currenFaction)
+    await this.prepareFactionTurn(this.currenFaction)
   }
 
   // event handling

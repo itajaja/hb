@@ -78,7 +78,7 @@ export default class Store extends BaseStore<IState> {
 
   endTurn = async () => {
     const { game } = this.state
-    game.endTurn()
+    await game.endTurn()
     this.set({
       selection: undefined,
       hover: undefined,
@@ -89,5 +89,6 @@ export default class Store extends BaseStore<IState> {
       const opponent = new OpponentAi(this)
       await opponent.performTurn()
     }
+    this.set({})
   }
 }

@@ -13,7 +13,11 @@ export default {
   mp: 2,
   mana: 6,
   resistance: 0,
-  actions: [meleeAttack({ damage: 2 }), Heal, Sleep],
+  actions: [
+    meleeAttack({ damage: 2 }),
+    Heal,
+    Sleep,
+  ],
 
-  cost: 6,
+  cost: 10,
 } as IUnitType

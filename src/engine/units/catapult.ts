@@ -12,7 +12,9 @@ export default {
   mp: 1,
   mana: 0,
   resistance: 0,
-  actions: [stoneThrow({ damage: 4, area: 1 })],
+  actions: [
+    stoneThrow({ damage: 4, area: 1, range: [8, 2] }),
+  ],
 
-  cost: 6,
+  cost: 10,
 } as IUnitType

@@ -14,9 +14,8 @@ export default class TwoHandedSwordAttack extends UnitAction {
   params: IParams
 
   async performAction(target: Hex) {
-    const targetDir = directions.findIndex(
-      d => this.unit.pos.add(d).equals(target),
-    )
+    const targetDir = this.unit.pos.getNeighborDirection(target)
+
     const hits = [
       target,
       this.unit.pos.add(getItemCircular(directions, targetDir + 1)),

@@ -12,7 +12,10 @@ export default {
   mp: 3,
   mana: 0,
   resistance: 0,
-  actions: [meleeAttack({ damage: 2 }), rangedAttack({ damage: 3 })],
+  actions: [
+    meleeAttack({ damage: 2 }),
+    rangedAttack({ damage: 3, range: [6, 2] }),
+  ],
 
   cost: 8,
 } as IUnitType

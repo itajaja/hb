@@ -4,6 +4,7 @@ import Game from './game'
 import Hex from './hex'
 import { ICell, Terrain } from './map'
 import Thing from './thing'
+import { ITrait } from './units/traits'
 
 export interface IUnitConfig {
   factionId: string
@@ -12,11 +13,10 @@ export interface IUnitConfig {
 }
 
 export enum UnitState {
-  Normal,
   Guard,
   Sleeping,
-  Confused,
-  Poisoned,
+  Burning,
+  Slowed,
 }
 
 export interface IUnitType {
@@ -31,6 +31,8 @@ export interface IUnitType {
   actions: Array<typeof UnitAction>,
 
   cost: number
+
+  traits?: ITrait[],
 }
 
 export default class Unit extends Thing {
@@ -48,12 +50,11 @@ export default class Unit extends Thing {
 
   actionPerformed = false
 
-  state: UnitState = UnitState.Normal
-  stateExpiration: number
+  state = new Map<UnitState, number>()
 
   actions: UnitAction[]
 
-  walkableTerrains = [Terrain.Ground, Terrain.Water, Terrain.Forest]
+  walkableTerrains = new Set([Terrain.Ground, Terrain.Water, Terrain.Forest])
 
   constructor(game: Game, { pos, factionId, type }: IUnitConfig) {
     super()
@@ -65,6 +66,10 @@ export default class Unit extends Thing {
     this.mana = type.mana
     this.game = game
     this.actions = type.actions.map(Action => new Action(game, this))
+
+    if (type.traits) {
+      type.traits.forEach(t => t.modify(this))
+    }
   }
 
   getAction(actionType: typeof UnitAction): UnitAction {
@@ -80,12 +85,15 @@ export default class Unit extends Thing {
 
   get canPerformAction(): boolean {
     return !this.actionPerformed
-      && this.state !== UnitState.Confused
-      && this.state !== UnitState.Sleeping
+      && !this.state.has(UnitState.Sleeping)
   }
 
   get resistance(): number {
-    return this.type.resistance + this.state === UnitState.Guard ? 1 : 0
+    let modifier = 0
+    if (this.state.has(UnitState.Guard)) {
+      modifier++
+    }
+    return this.type.resistance + modifier
   }
 
   async takeDamage(damage: number) {
@@ -134,29 +142,40 @@ export default class Unit extends Thing {
       return false
     }
 
-    return this.walkableTerrains.lastIndexOf(cell.terrain) >= 0
+    return this.walkableTerrains.has(cell.terrain)
   }
 
   alterState(state: UnitState, exp: number) {
-    this.state = state
-    this.stateExpiration = exp
+    this.state.set(state, exp)
   }
 
   /**
    * reset the unit state before the turn begins
    */
-  tickTurn() {
+  async tickTurn() {
     this.actionPerformed = false
     this.mp = this.type.mp
 
-    if (this.state !== UnitState.Normal) {
-      // TODO apply state
-
-      this.stateExpiration--
-
-      if (this.stateExpiration === 0) {
-        this.state = UnitState.Normal
+    const states = Array.from(this.state.entries())
+    await Promise.all(states.map(async ([state, expiration]) => {
+      switch (state) {
+        // TODO the state handling should probably not live here but in the
+        // single state modules
+        case UnitState.Burning:
+          await this.takeDamage(2)
+          break
+        case UnitState.Slowed:
+          this.mp--
+        default:
+          break
       }
-    }
+
+      if (expiration === 0) {
+        this.state.delete(state)
+      } else {
+        this.state.set(state, expiration - 1)
+      }
+    }))
+
   }
 }

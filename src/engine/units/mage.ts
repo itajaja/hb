@@ -14,7 +14,11 @@ export default {
   mp: 2,
   mana: 6,
   resistance: 0,
-  actions: [meleeAttack({ damage: 2 }), Teleport, Fireball],
+  actions: [
+    meleeAttack({ damage: 2 }),
+    Teleport,
+    Fireball,
+  ],
 
   cost: 10,
 } as IUnitType
