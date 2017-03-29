@@ -73,9 +73,15 @@ const groundTile = (
   </g>
 )
 
+const pitTile = (
+  <g>
+    <polygon fill="transparent" points={iso.drawHex(1)} />    
+  </g>
+)
+
 const tiles = {
   [Terrain.Ground]: groundTile,
-  [Terrain.Pit]: null,
+  [Terrain.Pit]: pitTile,
 }
 
 export interface IProps {
