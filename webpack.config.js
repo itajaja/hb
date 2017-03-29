@@ -30,6 +30,7 @@ let config = {
   plugins: [
     new HtmlWebpackPlugin({
       template: './src/assets/index.html',
+      favicon: 'src/assets/favicon.png',
       inject: true,
     }),
   ],
