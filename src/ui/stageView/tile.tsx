@@ -43,21 +43,24 @@ const groundTile = (
     <defs>
       <linearGradient id="eastWallGround" x1="27%" x2="73%" y1="0%" y2="100%">
         <stop offset="0%" stopColor={groundStyle.eastWall.fill} />
-        <stop offset="60%"
+        <stop offset="30%" stopColor={groundStyle.eastWall.fill} />
+        <stop offset="70%"
           stopColor={groundStyle.eastWall.fill}
           stopOpacity="0"
         />
       </linearGradient>
       <linearGradient id="southWallGround" x1="0%" x2="0%" y1="0%" y2="100%">
         <stop offset="0%" stopColor={groundStyle.southWall.fill} />
-        <stop offset="80%"
+        <stop offset="50%" stopColor={groundStyle.southWall.fill} />
+        <stop offset="90%"
           stopColor={groundStyle.southWall.fill}
           stopOpacity="0"
         />
       </linearGradient>
       <linearGradient id="westWallGround" x1="63%" x2="37%" y1="0%" y2="100%">
         <stop offset="0%" stopColor={groundStyle.westWall.fill} />
-        <stop offset="70%"
+        <stop offset="40%" stopColor={groundStyle.westWall.fill} />
+        <stop offset="80%"
           stopColor={groundStyle.westWall.fill}
           stopOpacity="0"
         />
