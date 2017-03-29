@@ -16,11 +16,6 @@ function makeTerrainStyle(fill, stroke) {
   }
 }
 
-const terrainStyles = {
-  [Terrain.Pit]: makeTerrainStyle('transparent', 'transparent'),
-  [Terrain.Ground]: makeTerrainStyle('#5C4B3D', 'black'),
-}
-
 const SOUTH_WALL = svg.points(
   { x: iso.HEX_POINTS.sw.x, y: iso.HEX_POINTS.sw.y },
   { x: iso.HEX_POINTS.sw.x, y: iso.HEX_POINTS.sw.y + WALL_HEIGHT },
@@ -42,44 +37,50 @@ const EAST_WALL = svg.points(
   { x: iso.HEX_POINTS.e.x, y: iso.HEX_POINTS.e.y },
 )
 
+const groundStyle = makeTerrainStyle('#5C4B3D', 'black')
+const groundTile = (
+  <g>
+    <defs>
+      <linearGradient id="eastWallGround" x1="27%" x2="73%" y1="0%" y2="100%">
+        <stop offset="0%" stopColor={groundStyle.eastWall.fill} />
+        <stop offset="60%"
+          stopColor={groundStyle.eastWall.fill}
+          stopOpacity="0"
+        />
+      </linearGradient>
+      <linearGradient id="southWallGround" x1="0%" x2="0%" y1="0%" y2="100%">
+        <stop offset="0%" stopColor={groundStyle.southWall.fill} />
+        <stop offset="80%"
+          stopColor={groundStyle.southWall.fill}
+          stopOpacity="0"
+        />
+      </linearGradient>
+      <linearGradient id="westWallGround" x1="63%" x2="37%" y1="0%" y2="100%">
+        <stop offset="0%" stopColor={groundStyle.westWall.fill} />
+        <stop offset="70%"
+          stopColor={groundStyle.westWall.fill}
+          stopOpacity="0"
+        />
+      </linearGradient>
+    </defs>
+    <polygon points={SOUTH_WALL} fill="url(#southWallGround)" />
+    <polygon points={WEST_WALL} fill="url(#westWallGround)" />
+    <polygon points={EAST_WALL} fill="url(#eastWallGround)" />
+    <polygon style={groundStyle.tile} points={iso.drawHex(1)} />
+  </g>
+)
+
+const tiles = {
+  [Terrain.Ground]: groundTile,
+  [Terrain.Pit]: null,
+}
+
 export interface IProps {
   terrain: Terrain,
 }
 
 export default class Tile extends React.PureComponent<IProps, void> {
   render() {
-    const styles = terrainStyles[this.props.terrain]
-
-    return (
-      <g>
-        <defs>
-          <linearGradient id="eastWall" x1="27%" x2="73%" y1="0%" y2="100%">
-            <stop offset="0%" stopColor={styles.eastWall.fill} />
-            <stop offset="60%"
-              stopColor={styles.eastWall.fill}
-              stopOpacity="0"
-            />
-          </linearGradient>
-          <linearGradient id="southWall" x1="0%" x2="0%" y1="0%" y2="100%">
-            <stop offset="0%" stopColor={styles.southWall.fill} />
-            <stop offset="80%"
-              stopColor={styles.southWall.fill}
-              stopOpacity="0"
-            />
-          </linearGradient>
-          <linearGradient id="westWall" x1="63%" x2="37%" y1="0%" y2="100%">
-            <stop offset="0%" stopColor={styles.westWall.fill} />
-            <stop offset="70%"
-              stopColor={styles.westWall.fill}
-              stopOpacity="0"
-            />
-          </linearGradient>
-        </defs>
-        <polygon points={SOUTH_WALL} fill="url(#southWall)" />
-        <polygon points={WEST_WALL} fill="url(#westWall)" />
-        <polygon points={EAST_WALL} fill="url(#eastWall)" />
-        <polygon style={styles.tile} points={iso.drawHex(1)} />
-      </g>
-    )
+    return tiles[this.props.terrain]
   }
 }
