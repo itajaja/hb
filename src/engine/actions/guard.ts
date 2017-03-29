@@ -6,9 +6,12 @@ export default class Guard extends UnitAction {
   description = 'put the unit in defensive position to absorb enemy attacks'
 
   performAction() {
-    this.unit.alterState(UnitStatus.Guard, 1)
-
-    return {}
+    return {
+      targets: [{
+        unitId: this.unit.id,
+        status: { status: UnitStatus.Guard, exp: 1 },
+      }],
+    }
   }
 
   targets() {

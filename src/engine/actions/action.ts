@@ -1,10 +1,14 @@
 import Game from '../game'
 import Hex from '../hex'
-import Unit from '../unit'
+import Unit, { UnitStatus } from '../unit'
 
-// TODO Not sure how to use this
-// tslint:disable-next-line:no-empty-interface
-interface IActionResult {
+export interface IActionResult {
+  targets: Array<{
+    unitId: string,
+    damage?: number,
+    status?: { status: UnitStatus, exp: number },
+    newPosition?: Hex,
+  }>
 }
 
 /**
@@ -16,7 +20,7 @@ export interface IAction {
 
   game: Game
 
-  execute(target: Hex): IActionResult
+  execute(target: Hex): Promise<void>
 
   targets(): Hex[]
 }
@@ -39,9 +43,9 @@ export class UnitAction implements IAction {
     return this.isAvailable && this.unit.canPerformAction
   }
 
-  async execute(target: Hex): Promise<IActionResult> {
+  async execute(target: Hex) {
     if (!this.canExecute) {
-      return {} // TODO Should we be smarter here?
+      return
     }
 
     this.unit.actionPerformed = true
@@ -49,8 +53,20 @@ export class UnitAction implements IAction {
     this.unit.mana -= this.manaCost
 
     await this.game.emit('action:perform', this)
-    const result = await this.performAction(target)
-    return result
+    const result = this.performAction(target)
+    await Promise.all(result.targets.map(async t => {
+      const targetUnit = this.game.things.get(t.unitId) as Unit
+      if (t.damage) {
+        await targetUnit.takeDamage(t.damage)
+      }
+      if (t.status) {
+        await targetUnit.alterStatus(t.status.status, t.status.exp)
+      }
+      if (t.newPosition) {
+        this.game.moveThing(targetUnit, t.newPosition)
+        targetUnit.pos = t.newPosition
+      }
+    }))
   }
 
   targets(): Hex[] {

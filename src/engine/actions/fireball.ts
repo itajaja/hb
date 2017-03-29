@@ -14,15 +14,15 @@ export default class Fireball extends UnitAction {
   }
   manaCost = 1
 
-  async performAction(target) {
-    const hits = this.game.map.thingsInRange(target, this.params.area)
-    await Promise.all(hits.map(async t => {
-      if (t instanceof Unit) {
-        await t.takeDamage(this.params.damage)
-      }
-    }))
+  performAction(target) {
+    const { area, damage } = this.params
 
-    return {}
+    const hits = this.game.map.thingsInRange(target, area)
+      .filter(t => t instanceof Unit) as Unit[]
+
+    return {
+      targets: hits.map(t => ({ unitId: t.id, damage })),
+    }
   }
 
   targets() {

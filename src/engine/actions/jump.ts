@@ -1,17 +1,18 @@
 import Hex from '../hex'
 import { UnitAction } from './action'
 
-export default class Teleport extends UnitAction {
+export default class Jump extends UnitAction {
   name = 'Jump'
   description = 'allows to jump after an obstacle'
 
   params: {}
 
   performAction(target: Hex) {
-    this.game.moveThing(this.unit, target)
-    this.unit.pos = target
-
-    return {}
+    return {
+      targets: [{
+        unitId: this.unit.id, newPosition: target,
+      }],
+    }
   }
 
   targets() {

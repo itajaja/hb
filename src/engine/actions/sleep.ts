@@ -1,6 +1,6 @@
 import Hex from '../hex'
 import Unit, { UnitStatus } from '../unit'
-import { UnitAction } from './action'
+import { IActionResult, UnitAction } from './action'
 
 export default class Sleep extends UnitAction {
   name = 'Sleep'
@@ -11,17 +11,21 @@ export default class Sleep extends UnitAction {
   manaCost = 2
 
   performAction(target: Hex) {
+    const result: IActionResult = { targets: [] }
+
     const targetUnit = this.game.map.cellAt(target).thing
     if (targetUnit instanceof Unit) {
-      targetUnit.alterState(UnitStatus.Sleeping, 2)
+      result.targets!.push({
+        unitId: targetUnit.id,
+        status: { status: UnitStatus.Sleeping, exp: 2 },
+      })
     }
 
-    return {}
+    return result
   }
 
   targets() {
     const { pos } = this.unit
-    return pos.range(6, 1)
-      .filter(this.game.map.isIn)
+    return pos.range(6, 1).filter(this.game.map.isIn)
   }
 }

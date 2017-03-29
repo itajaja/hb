@@ -9,10 +9,11 @@ export default class Teleport extends UnitAction {
   manaCost = 2
 
   performAction(target: Hex) {
-    this.game.moveThing(this.unit, target)
-    this.unit.pos = target
-
-    return {}
+    return {
+      targets: [{
+        unitId: this.unit.id, newPosition: target,
+      }],
+    }
   }
 
   targets() {

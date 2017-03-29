@@ -13,22 +13,21 @@ export default class TwoHandedSwordAttack extends UnitAction {
 
   params: IParams
 
-  async performAction(target: Hex) {
+  performAction(target: Hex) {
     const targetDir = this.unit.pos.getNeighborDirection(target)
 
     const hits = [
       target,
       this.unit.pos.add(getItemCircular(directions, targetDir + 1)),
       this.unit.pos.add(getItemCircular(directions, targetDir - 1)),
-    ].filter(this.game.map.isIn).map(this.game.map.cellAt)
+    ].filter(this.game.map.isIn)
+      .map(t => this.game.map.cellAt(t).thing)
+      .filter(t => t instanceof Unit) as Unit[]
 
-    await Promise.all(hits.map(async t => {
-      if (t.thing instanceof Unit) {
-        await t.thing.takeDamage(this.params.damage)
-      }
-    }))
 
-    return {}
+    return {
+      targets: hits.map(t => ({ unitId: t.id, damage: this.params.damage })),
+    }
   }
 
   targets() {

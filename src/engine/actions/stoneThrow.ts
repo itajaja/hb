@@ -1,6 +1,6 @@
 import Hex from '../hex'
 import Unit from '../unit'
-import { UnitAction } from './action'
+import { IActionResult, UnitAction } from './action'
 
 interface IParams {
   damage: number
@@ -8,33 +8,31 @@ interface IParams {
   range: [number, number]
 }
 
-export default class RangedAttack extends UnitAction {
+export default class StoneThrow extends UnitAction {
   name = 'Stone Throw'
   description = 'Throw a massive stone, causing area damage'
 
   params: IParams
 
-  async hitCenter(target: Hex) {
-    const hits = this.game.map.thingsInRange(target, this.params.area, 1)
-    await Promise.all(hits.map(async t => {
-      if (t instanceof Unit) {
-        await t.takeDamage(1)
-      }
-    }))
-  }
+  performAction(target: Hex) {
+    const result: IActionResult = { targets: [] }
 
-  async hitArea(target: Hex) {
     const targetUnit = this.game.map.cellAt(target).thing
 
     if (targetUnit instanceof Unit) {
-      await targetUnit.takeDamage(this.params.damage)
+      result.targets!.push({
+        unitId: targetUnit.id, damage: this.params.damage,
+      })
     }
-  }
 
-  async performAction(target: Hex) {
-    await Promise.all([this.hitCenter(target), this.hitArea(target)])
+    const areaHits = this.game.map.thingsInRange(target, this.params.area, 1)
+      .filter(t => t instanceof Unit) as Unit[]
 
-    return {}
+    result.targets = result.targets.concat(areaHits.map(t => ({
+      unitId: t.id, damage: 1,
+    })))
+
+    return result
   }
 
   targets() {
@@ -46,7 +44,7 @@ export default class RangedAttack extends UnitAction {
 }
 
 export function stoneThrow(params: IParams) {
-  return class extends RangedAttack {
+  return class extends StoneThrow {
     params = params
   }
 }

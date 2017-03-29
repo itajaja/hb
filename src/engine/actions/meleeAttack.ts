@@ -1,6 +1,6 @@
 import Hex from '../hex'
 import Unit from '../unit'
-import { UnitAction } from './action'
+import { IActionResult, UnitAction } from './action'
 
 interface IParams {
   damage: number
@@ -12,13 +12,17 @@ export default class MeleeAttack extends UnitAction {
 
   params: IParams
 
-  async performAction(target: Hex) {
+  performAction(target: Hex) {
+    const result: IActionResult = { targets: [] }
+
     const targetUnit = this.game.map.cellAt(target).thing
     if (targetUnit instanceof Unit) {
-      await targetUnit.takeDamage(this.params.damage)
+      result.targets!.push({
+        unitId: targetUnit.id, damage: this.params.damage,
+      })
     }
 
-    return {}
+    return result
   }
 
   targets() {

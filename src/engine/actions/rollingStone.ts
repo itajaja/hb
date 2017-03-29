@@ -10,7 +10,7 @@ export default class RollingStone extends UnitAction {
     damage: 3,
   }
 
-  async performAction(target: Hex) {
+  performAction(target: Hex) {
     let vector = target.sub(this.unit.pos)
     vector = new Hex(Math.sign(vector.q), Math.sign(vector.r))
 
@@ -27,9 +27,9 @@ export default class RollingStone extends UnitAction {
       target = target.add(vector)
     }
 
-    await Promise.all(hits.map(t => t.takeDamage(this.params.damage)))
-
-    return {}
+    return {
+      targets: hits.map(t => ({ unitId: t.id, damage: this.params.damage })),
+    }
   }
 
   targets() {
