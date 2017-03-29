@@ -90,12 +90,11 @@ export default class MainView extends React.Component<IProps, IState> {
     return (
       <Screen classes={[styles.main]}>
         {shop}
-        <h1>HB</h1>
-        <h2>Campaign</h2>
-        {!!levelReached && <h3>Depth reached: {levelReached}</h3>}
-        <h3 className={css(styles.button)} onClick={this.onStartLevel}>
+        <h1>Hexa Battle</h1>
+        <h2 className={css(styles.button)} onClick={this.onStartLevel}>
           {levelReached ? 'Venture Deeper' : 'Start your adventure'}
-        </h3>
+        </h2>
+        {!!levelReached && <h3>Depth reached: {levelReached}</h3>}
         <div>
           {store.state.party.map(this.renderPartyUnit)}
         </div>
