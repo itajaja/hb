@@ -1,5 +1,5 @@
 import createLevel from '../content/createLevel'
-import levels from '../content/levels'
+import { generateLevel } from '../content/levels'
 import Game from '../engine/game'
 import { IUnitType } from '../engine/unit'
 import * as units from '../engine/units'
@@ -16,6 +16,7 @@ export interface IState {
     game: Game,
     level: number,
     playerFaction: string,
+    reward: number,
   }
 }
 
@@ -23,10 +24,10 @@ export default class MainStore extends Store<IState> {
   finishGame = (won: boolean) => {
     if (won) {
       const { money, currentGame } = this.state
-      const { game, level, playerFaction } = currentGame!
+      const { game, level, playerFaction, reward } = currentGame!
 
       this.set({
-        money: money + levels[level].reward,
+        money: money + reward,
         party: game.factionUnits[playerFaction].map(u => u.type),
         levelReached: level + 1,
         currentGame: undefined,
@@ -40,7 +41,7 @@ export default class MainStore extends Store<IState> {
 
   startGame(level: number) {
     debug('mainStore: starting new game')
-    const levelDef = levels[level]
+    const levelDef = generateLevel(level)
     const game = createLevel(levelDef, this.state.party)
     this.set({
       currentGame: {
@@ -48,6 +49,7 @@ export default class MainStore extends Store<IState> {
         level,
         // The player faction is the first one, the rest are AIs
         playerFaction: Array.from(game.factions.keys())[0],
+        reward: levelDef.reward,
       },
     })
   }

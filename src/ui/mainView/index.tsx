@@ -1,7 +1,6 @@
 import { css, StyleSheet } from 'aphrodite'
 import * as React from 'react'
 
-import levels from '../../content/levels'
 import { IUnitType } from '../../engine/unit'
 import Screen from '../components/screen'
 import MainStore from '../mainStore'
@@ -45,6 +44,11 @@ export default class MainView extends React.Component<IProps, IState> {
     showShop: false,
   }
 
+  onStartLevel = () => {
+    const { store } = this.props
+    store.startGame(store.state.levelReached)
+  }
+
   renderLevelButton = (_, levelNumber: number) => {
     // TODO this should be geq?
     const { store } = this.props
@@ -64,7 +68,7 @@ export default class MainView extends React.Component<IProps, IState> {
     return <Unit unitType={unit} key={idx} />
   }
 
-renderShop() {
+  renderShop() {
     if (!this.state.showShop) {
       return null
     }
@@ -77,16 +81,21 @@ renderShop() {
     )
   }
 
-render() {
+  render() {
     const { store } = this.props
     const shop = this.renderShop()
+    const { levelReached } = store.state
+
 
     return (
       <Screen classes={[styles.main]}>
         {shop}
         <h1>HB</h1>
         <h2>Campaign</h2>
-        {levels.map(this.renderLevelButton)}
+        {!!levelReached && <h3>Depth reached: {levelReached}</h3>}
+        <h3 className={css(styles.button)} onClick={this.onStartLevel}>
+          {levelReached ? 'Venture Deeper' : 'Start your adventure'}
+        </h3>
         <div>
           {store.state.party.map(this.renderPartyUnit)}
         </div>
