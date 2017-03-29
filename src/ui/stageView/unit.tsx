@@ -15,7 +15,7 @@ const SCALE_FACTOR = HEX_SIZE / ICON_SIZE
 const styles = StyleSheet.create({
   unit: {
     transform: transform.scaleY(SCALE_FACTOR).scaleX(SCALE_FACTOR).string(),
-    strokeWidth: '3%',
+    strokeWidth: '2%',
   },
   backBarStyle: {
     stroke: 'black',
