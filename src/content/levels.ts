@@ -11,7 +11,7 @@ export interface ILevelDefinition {
 
   opponents: Map<IUnitType, number>
 
-  partyDeployOrigin: Hex
+  partyDeployOrigins: Hex[]
 
   reward: number
 }
@@ -91,7 +91,10 @@ export function generateLevel(number): ILevelDefinition {
       new Map(),
     ),
 
-    partyDeployOrigin: new Hex(mapSize, 0),
+    partyDeployOrigins: [
+      new Hex(mapSize, 0),
+      new Hex(-mapSize, 0),
+    ],
 
     reward,
   }

@@ -68,7 +68,7 @@ export default function createLevel(
 
   // add friendly units
   party.forEach(unit => {
-    let tempPos = def.partyDeployOrigin
+    let tempPos = def.partyDeployOrigins[0]
     tryUntil(
       () => {
         tempPos = getRandomNeighbor(map, tempPos)
@@ -84,12 +84,17 @@ export default function createLevel(
   // add enemy units
   def.opponents.forEach((amount, unit) => {
     while (amount > 0) {
-      const cell = tryUntil(
-        () => getRandomCell(map),
+      let tempPos = def.partyDeployOrigins[1]
+      tryUntil(
+        () => {
+          tempPos = getRandomNeighbor(map, tempPos)
+          const c = map.cellAt(tempPos)
+          return c
+        },
         c => c.terrain === Terrain.Ground && !c.thing,
       )
 
-      game.addUnit({ factionId: fb.id, pos: cell.pos, type: unit })
+      game.addUnit({ factionId: fb.id, pos: tempPos, type: unit })
       amount--
     }
   })
