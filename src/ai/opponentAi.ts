@@ -60,7 +60,7 @@ export default class OpponentAi {
         debug('ai: reached final position', p)
         break
       }
-      unit.move(p)
+      await unit.move(p)
 
       await this.tryExecuteUnitAction(unit, unitAi.getAction())
     }

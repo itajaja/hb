@@ -108,7 +108,7 @@ export default class Unit extends Thing {
     }
 
     // damage
-    await this.game.emit('takeDamage', this)
+    await this.game.emit('unit:takeDamage', this)
     damage -= this.resistance
 
     this.hp = Math.max(this.hp - damage, 0)
@@ -119,10 +119,12 @@ export default class Unit extends Thing {
     }
   }
 
-  move(to: Hex) {
+  async move(to: Hex) {
+    const from = this.pos
     this.game.moveThing(this, to)
     this.mp -= to.distance(this.pos)
     this.pos = to
+    await this.game.emit('unit:move', { unit: this, from })
   }
 
   moveTargets(): Hex[] {

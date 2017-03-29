@@ -38,7 +38,7 @@ export default class Store extends BaseStore<IState> {
       !action && unit && unit.unit.factionId === playerFaction
       && unit.paths[cell.pos.toString()]
     ) {
-      unit.unit.move(cell.pos)
+      await unit.unit.move(cell.pos)
       newSelection = this.getCellInfo(cell)
     } else {
       newSelection = this.getCellInfo(cell)

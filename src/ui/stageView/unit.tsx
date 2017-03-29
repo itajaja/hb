@@ -35,8 +35,8 @@ export default class Unit extends React.Component<IProps, {}> {
     super(props, ctx)
     const { game } = this.props.unit
     this.listeners = [
-      game.listen('performAction', this.onPerformAction),
-      game.listen('takeDamage', this.onTakeDamage),
+      game.listen('action:perform', this.onPerformAction),
+      game.listen('unit:takeDamage', this.onTakeDamage),
     ]
   }
 

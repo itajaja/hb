@@ -48,7 +48,7 @@ export class UnitAction implements IAction {
     this.unit.mp = 0
     this.unit.mana -= this.manaCost
 
-    await this.game.emit('performAction', this)
+    await this.game.emit('action:perform', this)
     const result = await this.performAction(target)
     return result
   }
