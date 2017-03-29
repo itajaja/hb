@@ -17,7 +17,7 @@ export default class Sleep extends UnitAction {
     if (targetUnit instanceof Unit) {
       result.targets!.push({
         unitId: targetUnit.id,
-        status: { status: UnitStatus.Sleeping, exp: 2 },
+        status: { status: UnitStatus.Sleeping, exp: 1 },
       })
     }
 
