@@ -2,7 +2,7 @@ import { ICell } from '../engine/map'
 import Unit from '../engine/unit'
 import Store from '../ui/stageView/store'
 import { debug, intervalForeach } from '../utils'
-import unitAis from './unitAi'
+import UnitAi from './unitAi'
 
 /**
  * the main strategy for the opponent is to move each unit, and if possible
@@ -47,7 +47,7 @@ export default class OpponentAi {
   moveUnit = async (unit: Unit) => {
     debug('ai: moving unit', unit)
     const { game } = this.store.state
-    const unitAi = new unitAis[unit.type.name](unit, game.map, this)
+    const unitAi = new UnitAi(unit, game.map, this)
 
     await this.tryExecuteUnitAction(unit, unitAi.getAction())
 

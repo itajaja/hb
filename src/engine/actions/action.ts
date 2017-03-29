@@ -73,7 +73,7 @@ export class UnitAction implements IAction {
     throw Error('Not Implemented')
   }
 
-  protected performAction(target: Hex): IActionResult {
+  performAction(target: Hex): IActionResult {
     throw Error('Not Implemented')
   }
 }
