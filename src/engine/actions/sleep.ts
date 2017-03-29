@@ -1,5 +1,5 @@
 import Hex from '../hex'
-import Unit, { UnitState } from '../unit'
+import Unit, { UnitStatus } from '../unit'
 import { UnitAction } from './action'
 
 export default class Sleep extends UnitAction {
@@ -13,7 +13,7 @@ export default class Sleep extends UnitAction {
   performAction(target: Hex) {
     const targetUnit = this.game.map.cellAt(target).thing
     if (targetUnit instanceof Unit) {
-      targetUnit.alterState(UnitState.Sleeping, 2)
+      targetUnit.alterState(UnitStatus.Sleeping, 2)
     }
 
     return {}

@@ -1,5 +1,5 @@
 import Hex from '../hex'
-import Unit, { UnitState } from '../unit'
+import Unit, { UnitStatus } from '../unit'
 import { UnitAction } from './action'
 
 export default class Heal extends UnitAction {
@@ -16,7 +16,7 @@ export default class Heal extends UnitAction {
     if (targetUnit instanceof Unit) {
       await Promise.all([
         targetUnit.takeDamage(this.params.damage),
-        targetUnit.alterState(UnitState.Slowed, 5),
+        targetUnit.alterState(UnitStatus.Slowed, 5),
       ])
     }
 

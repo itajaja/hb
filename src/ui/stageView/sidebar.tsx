@@ -3,7 +3,7 @@ import * as React from 'react'
 
 import { UnitAction } from '../../engine/actions/action'
 import { ICell, Terrain } from '../../engine/map'
-import Unit, { UnitState } from '../../engine/unit'
+import Unit, { UnitStatus } from '../../engine/unit'
 import Layout from '../components/layout'
 import style from '../utils/style'
 import Store from './store'
@@ -70,7 +70,7 @@ function renderCellInfo(cell: ICell) {
 }
 
 function renderUnitInfo(unit: Unit) {
-  const statuses = Array.from(unit.state.keys()).map(s => UnitState[s])
+  const statuses = Array.from(unit.status.keys()).map(s => UnitStatus[s])
 
   return (
     <div>

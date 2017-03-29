@@ -12,7 +12,7 @@ export interface IUnitConfig {
   type: IUnitType
 }
 
-export enum UnitState {
+export enum UnitStatus {
   Guard,
   Sleeping,
   Burning,
@@ -50,7 +50,7 @@ export default class Unit extends Thing {
 
   actionPerformed = false
 
-  state = new Map<UnitState, number>()
+  status = new Map<UnitStatus, number>()
 
   actions: UnitAction[]
 
@@ -85,12 +85,12 @@ export default class Unit extends Thing {
 
   get canPerformAction(): boolean {
     return !this.actionPerformed
-      && !this.state.has(UnitState.Sleeping)
+      && !this.status.has(UnitStatus.Sleeping)
   }
 
   get resistance(): number {
     let modifier = 0
-    if (this.state.has(UnitState.Guard)) {
+    if (this.status.has(UnitStatus.Guard)) {
       modifier++
     }
     return this.type.resistance + modifier
@@ -147,35 +147,35 @@ export default class Unit extends Thing {
     return this.walkableTerrains.has(cell.terrain)
   }
 
-  alterState(state: UnitState, exp: number) {
-    this.state.set(state, exp)
+  alterStatus(state: UnitStatus, exp: number) {
+    this.status.set(state, exp)
   }
 
   /**
-   * reset the unit state before the turn begins
+   * reset the unit status before the turn begins
    */
   async tickTurn() {
     this.actionPerformed = false
     this.mp = this.type.mp
 
-    const states = Array.from(this.state.entries())
-    await Promise.all(states.map(async ([state, expiration]) => {
-      switch (state) {
-        // TODO the state handling should probably not live here but in the
+    const statuses = Array.from(this.status.entries())
+    await Promise.all(statuses.map(async ([status, expiration]) => {
+      switch (status) {
+        // TODO the status handling should probably not live here but in the
         // single state modules
-        case UnitState.Burning:
+        case UnitStatus.Burning:
           await this.takeDamage(2)
           break
-        case UnitState.Slowed:
+        case UnitStatus.Slowed:
           this.mp--
         default:
           break
       }
 
       if (expiration === 0) {
-        this.state.delete(state)
+        this.status.delete(status)
       } else {
-        this.state.set(state, expiration - 1)
+        this.status.set(status, expiration - 1)
       }
     }))
 

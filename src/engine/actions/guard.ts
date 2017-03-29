@@ -1,4 +1,4 @@
-import { UnitState } from '../unit'
+import { UnitStatus } from '../unit'
 import { UnitAction } from './action'
 
 export default class Guard extends UnitAction {
@@ -6,7 +6,7 @@ export default class Guard extends UnitAction {
   description = 'put the unit in defensive position to absorb enemy attacks'
 
   performAction() {
-    this.unit.alterState(UnitState.Guard, 1)
+    this.unit.alterState(UnitStatus.Guard, 1)
 
     return {}
   }
