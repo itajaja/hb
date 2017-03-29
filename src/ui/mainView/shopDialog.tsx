@@ -2,8 +2,7 @@ import { css, StyleSheet } from 'aphrodite'
 import * as React from 'react'
 
 import { IUnitType } from '../../engine/unit'
-import * as units from '../../engine/units'
-import { objectValues } from '../../utils'
+import races from '../../engine/units/races'
 import Dialog from '../components/dialog'
 import Layout from '../components/layout'
 import MainStore from '../mainStore'
@@ -101,7 +100,7 @@ export default class MainView extends React.Component<IProps, IState> {
           <h3>Select</h3>
           <div>
             <Layout direction="row" justify="space-around">  
-              {objectValues(units as any).map(this.renderUnitButton)}  
+              {races.humans.map(this.renderUnitButton)}  
             </Layout>
           </div>  
           <div className={css(styles.description)}>
