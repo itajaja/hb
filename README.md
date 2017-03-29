@@ -1,6 +1,6 @@
 # Hexa Battle
 
-a dungeon crawler written in react and typescript
+a dungeon crawler written in TypeScript using React and svg
 
 ![Screenshot](screenshots/1.png)
 ![Screenshot](screenshots/2.png)
