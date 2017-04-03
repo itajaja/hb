@@ -6,6 +6,7 @@ import Screen from '../components/screen'
 import UnitGlyph from '../components/unitGlyph'
 import MainStore from '../mainStore'
 import style from '../utils/style'
+import HelpDialog from './helpDialog'
 import ShopDialog from './shopDialog'
 
 const styles = StyleSheet.create({
@@ -37,11 +38,13 @@ interface IProps {
 
 interface IState {
   showShop: boolean
+  showHelp: boolean
 }
 
 export default class MainView extends React.Component<IProps, IState> {
   state = {
     showShop: false,
+    showHelp: false,
   }
 
   onStartLevel = () => {
@@ -81,14 +84,26 @@ export default class MainView extends React.Component<IProps, IState> {
     )
   }
 
+  renderHelp() {
+    if (!this.state.showHelp) {
+      return null
+    }
+
+    return (
+      <HelpDialog onCancel={() => this.setState({ showHelp: false })} />
+    )
+  }
+
   render() {
     const { store } = this.props
     const shop = this.renderShop()
+    const help = this.renderHelp()
     const { levelReached } = store.state
 
     return (
       <Screen classes={[styles.main]}>
         {shop}
+        {help}
         <h1>Hexa Battle</h1>
         <h2 className={css(styles.button)} onClick={this.onStartLevel}>
           {levelReached ? 'Venture Deeper' : 'Start your adventure'}
@@ -102,6 +117,12 @@ export default class MainView extends React.Component<IProps, IState> {
           className={css(styles.button)}
         >
           Shop
+        </h2>
+        <h2
+          onClick={() => this.setState({ showHelp: true })}
+          className={css(styles.button)}
+        >
+          Help
         </h2>
         <h2 onClick={store.resetProgress} className={css(styles.button)}>
           Reset Progress

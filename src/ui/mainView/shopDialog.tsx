@@ -43,8 +43,7 @@ interface IState {
   hoveredUnit?: IUnitType,
 }
 
-// TODO better style for this
-export default class MainView extends React.Component<IProps, IState> {
+export default class ShopDialog extends React.Component<IProps, IState> {
   state: IState = {
     cart: [],
   }
