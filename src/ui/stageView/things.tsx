@@ -52,9 +52,12 @@ export default class Things extends React.Component<IProps, {}> {
     this.props.store.state.game.things.forEach((t, k) => {
       if (t instanceof Unit) {
         const { x, y } = iso.projectHex(t.pos)
+        const style = {
+          transform: transform.translate(x, y, 'px').string(),
+        }
 
         things.push(
-          <g transform={transform.translate(x, y).string()} key={k} ref={k}>
+          <g style={style} key={k} ref={k}>
             <UnitC unit={t} />
           </g>,
         )
