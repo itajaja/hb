@@ -7,6 +7,7 @@ import EUnit from '../../engine/unit'
 import Bar from '../components/bar'
 import { ICON_SIZE } from '../components/icon'
 import UnitGlyph from '../components/unitGlyph'
+import style from '../utils/style'
 import transform from '../utils/transform'
 import { HEX_SIZE } from './iso'
 
@@ -75,32 +76,32 @@ export default class Unit extends React.Component<IProps, {}> {
       x: -5, height: 1, width: 10, backClasses: [styles.backBarStyle],
     }
 
-    const style = {
+    const unitStyle = {
       stroke: unit.faction.color,
     }
     return (
       <g>
         <g ref="main">
-          <g className={css(styles.unit)} style={style}>
+          <g className={css(styles.unit)} style={unitStyle}>
             <UnitGlyph unitType={unit.type} />
           </g>
           <g transform="rotate(-90)">
             <Bar
               {...barProps}
               y={10}
-              fill="red"
+              fill={style.hpColor}
               value={unit.hp / unit.type.hp}
             />
             <Bar
               {...barProps}
               y={11}
-              fill="darkgreen"
+              fill={style.mpColor}
               value={unit.mp / unit.type.mp}
             />
             {unit.type.mana > 0 && <Bar
               {...barProps}
               y={12}
-              fill="blue"
+              fill={style.manaColor}
               value={unit.mana / unit.type.mana}
             />}
           </g>

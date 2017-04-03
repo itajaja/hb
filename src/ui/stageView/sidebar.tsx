@@ -4,13 +4,14 @@ import * as React from 'react'
 import { UnitAction } from '../../engine/actions/action'
 import { ICell, Terrain } from '../../engine/map'
 import Unit, { UnitStatus } from '../../engine/unit'
+import ActionGlyph from '../components/actionGlyph'
 import Layout from '../components/layout'
+import UnitGlyph from '../components/unitGlyph'
 import style from '../utils/style'
 import Store from './store'
 
 const styles = StyleSheet.create({
   main: {
-    background: style.darkGreen,
     borderLeft: style.border,
     width: 400,
   },
@@ -18,18 +19,22 @@ const styles = StyleSheet.create({
     padding: 10,
   },
   button: {
-    padding: 10,
-    margin: '10px 0',
-    border: `1px solid ${style.gold}`,
+    padding: 2,
     cursor: 'pointer',
-    display: 'inline-block',
+    border: '5px solid transparent',
+  },
+  subText: {
+    fontSize: 'smaller',
   },
   disabledAction: {
-    cursor: 'not-allowed',
-    filter: 'blur(1px)',
+    cursor: 'default',
+    color: style.grey,
+  },
+  disabledActionIcon: {
+    fill: style.grey,
   },
   selectedAction: {
-    background: style.gold,
+    borderColor: style.gold,
   },
   endTurnButton: {
     padding: 20,
@@ -38,26 +43,53 @@ const styles = StyleSheet.create({
     borderTop: style.border,
     cursor: 'pointer',
   },
+  unitIcon: {
+    width: '30%',
+    height: '1%',
+  },
+  hpBar: { color: style.hpColor },
+  mpBar: { color: style.mpColor },
+  manaBar: { color: style.manaColor },
 })
 
 function renderActionButton(
   action: UnitAction, selectedAction: UnitAction | undefined, store: Store,
 ) {
   const isSelected = action === selectedAction
-  const classes = css(
+  const classes = [
     styles.button,
     isSelected && styles.selectedAction,
     !action.canExecute && styles.disabledAction,
-  )
+  ]
+  let manaCost
+  if (action.manaCost) {
+    manaCost = (
+      <span className={css(styles.manaBar)}>
+        ({action.manaCost} mana)
+      </span>
+    )
+  }
 
   return (
-    <span
+    <Layout
       key={action.name}
       onClick={action.canExecute ? () => store.selectAction(action) : undefined}
-      className={classes}
+      classes={classes}
+      direction="row"
+      align="center"
     >
-      {action.name}
-    </span>
+      <ActionGlyph
+        action={action}
+        wrapped={true}
+        classes={!action.canExecute && styles.disabledActionIcon}
+      />
+      <Layout grow>
+        {action.name} {manaCost}
+        <div className={css(styles.subText)}>
+          {action.description}
+        </div>
+      </Layout>
+    </Layout>
   )
 }
 
@@ -74,17 +106,33 @@ function renderUnitInfo(unit: Unit) {
 
   return (
     <div>
-      Unit: {unit.type.name}
-      <br />
-      Satus: {statuses.join() || '—'}
-      <br />
-      hp: {unit.hp}/{unit.type.hp}
-      <br />
-      mp: {unit.mp}/{unit.type.mp}
-      <br />
-      mana: {unit.mana}/{unit.type.mana}
-      <br />
-      resistance: {unit.resistance}
+      <Layout direction="row" >
+        <UnitGlyph
+          unitType={unit.type}
+          classes={styles.unitIcon}
+          wrapped={true}
+        />
+        <Layout>
+          <div>
+            {unit.type.name}            
+          </div>
+          <div>
+            Satus: {statuses.join() || '—'}
+          </div>
+          <div>
+            resistance: {unit.resistance}
+          </div>
+          <div className={css(styles.hpBar)}>
+            hp: {unit.hp}/{unit.type.hp}
+          </div>
+          <div className={css(styles.mpBar)}>
+            mp: {unit.mp}/{unit.type.mp}
+          </div>
+          <div className={css(styles.manaBar)}>
+            mana: {unit.mana}/{unit.type.mana}
+          </div>
+        </Layout>
+      </Layout>
     </div>
   )
 }
@@ -95,8 +143,6 @@ function renderActions(
   return (
     <div>
       {unit.actions.map(a => renderActionButton(a, selectedAction, store))}
-      <br />
-      {selectedAction && selectedAction.description}
     </div>
   )
 }
@@ -106,7 +152,7 @@ interface IProps {
 }
 
 export default function Sidebar({ store }: IProps) {
-  const { game, hover, selection, playerFaction } = store.state
+  const { game, hover, selection } = store.state
   const { currenFaction, epoch } = game
   const unit =  (hover && hover.unit) || (selection && selection.unit)
   const cell =  (hover && hover.cell) || (selection && selection.cell)
@@ -115,8 +161,7 @@ export default function Sidebar({ store }: IProps) {
 
   const cellInfo = cell && renderCellInfo(cell)
   const unitInfo = unit && renderUnitInfo(unit.unit)
-  const actionsInfo = unit && unit.unit.factionId === playerFaction
-    && unit.unit.canPerformAction && renderActions(unit.unit, action, store)
+  const actionsInfo = unit && renderActions(unit.unit, action, store)
 
   return (
     <Layout classes={[styles.main]}>

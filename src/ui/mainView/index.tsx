@@ -3,10 +3,10 @@ import * as React from 'react'
 
 import { IUnitType } from '../../engine/unit'
 import Screen from '../components/screen'
+import UnitGlyph from '../components/unitGlyph'
 import MainStore from '../mainStore'
 import style from '../utils/style'
 import ShopDialog from './shopDialog'
-import Unit from './unit'
 
 const styles = StyleSheet.create({
   main: {
@@ -65,7 +65,7 @@ export default class MainView extends React.Component<IProps, IState> {
   }
 
   renderPartyUnit(unit: IUnitType, idx: number) {
-    return <Unit unitType={unit} key={idx} />
+    return <UnitGlyph unitType={unit} key={idx} wrapped={true} />
   }
 
   renderShop() {
@@ -85,7 +85,6 @@ export default class MainView extends React.Component<IProps, IState> {
     const { store } = this.props
     const shop = this.renderShop()
     const { levelReached } = store.state
-
 
     return (
       <Screen classes={[styles.main]}>

@@ -84,7 +84,8 @@ export default class Unit extends Thing {
   }
 
   get canPerformAction(): boolean {
-    return !this.actionPerformed
+    return this.game.currenFaction.id === this.factionId
+      && !this.actionPerformed
       && !this.status.has(UnitStatus.Sleeping)
   }
 

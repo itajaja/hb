@@ -10,7 +10,7 @@ type TypedComponentClass<Props> = (
 export type StyledComponentProps<Props> = (
   Props
   & React.HTMLAttributes<{}>
-  & { className?: void, classes?: any[] } // explicitly forbid passing className
+  & { className?: void, classes?: any } // explicitly forbid passing className
 )
 
 function className<Props>(

@@ -26,11 +26,15 @@ const unitGlyphs: {[idx: string]: keyof typeof icons} = {
 
 interface IProps {
   unitType: IUnitType
+  wrapped?: boolean
+  classes?: any
 }
 
 export default class UnitGlyph extends React.PureComponent<IProps, {}> {
   render() {
-    const name = camelCase(this.props.unitType.name)
-    return <Icon icon={unitGlyphs[name]} />
+    const { unitType, ...props } = this.props
+
+    const name = camelCase(unitType.name)
+    return <Icon icon={unitGlyphs[name]} {...props} />
   }
 }

@@ -61,7 +61,7 @@ export default function Layout({
     justify = 'flex-start',
     Component = 'div',
     wrap = 'initial',
-    classes = [],
+    classes,
     ...props,
 }: StyledComponentProps<IProps>) {
   return (
@@ -73,7 +73,7 @@ export default function Layout({
         justifyStyles[justify],
         styles[direction],
         wrapStyles[wrap],
-        ...classes,
+        classes,
       )}
     />
   )

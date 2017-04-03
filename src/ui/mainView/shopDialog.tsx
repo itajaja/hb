@@ -5,9 +5,9 @@ import { IUnitType } from '../../engine/unit'
 import races from '../../engine/units/races'
 import Dialog from '../components/dialog'
 import Layout from '../components/layout'
+import UnitGlyph from '../components/unitGlyph'
 import MainStore from '../mainStore'
 import style from '../utils/style'
-import Unit from './unit'
 
 const styles = StyleSheet.create({
   main: {
@@ -64,10 +64,6 @@ export default class MainView extends React.Component<IProps, IState> {
     }
   }
 
-  renderUnit = (unit: IUnitType) => {
-    return <Unit unitType={unit} />
-  }
-
   renderUnitButton = (unit: IUnitType, idx: number) => {
     return (
       <div
@@ -77,7 +73,7 @@ export default class MainView extends React.Component<IProps, IState> {
         onMouseOver={() => this.setState({ hoveredUnit: unit })}
       >
         <Layout>
-          {this.renderUnit(unit)}
+          <UnitGlyph unitType={unit} wrapped={true} />
           {unit.cost}💰
         </Layout>
       </div>
@@ -109,7 +105,7 @@ export default class MainView extends React.Component<IProps, IState> {
           <h3>Selected</h3>
           <Layout direction="row" wrap="wrap" justify="center" grow>
             {this.state.cart.map((u, idx) => (
-              <span key={idx}>{this.renderUnit(u)}</span>
+              <span key={idx}><UnitGlyph unitType={u} wrapped={true}/></span>
             ))}
           </Layout>
           <div>

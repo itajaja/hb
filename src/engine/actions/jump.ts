@@ -3,7 +3,7 @@ import { UnitAction } from './action'
 
 export default class Jump extends UnitAction {
   name = 'Jump'
-  description = 'allows to jump after an obstacle'
+  description = 'Jump over an obstacle or a pit'
 
   params: {}
 
