@@ -122,10 +122,16 @@ export default class Unit extends Thing {
 
   async move(to: Hex) {
     const from = this.pos
+    const [, distance, path] = this.game.map.flood(
+      this.pos,
+      d => d.pos.equals(to),
+      this.canWalkOn,
+    ).found!
+    this.mp -= distance
     this.game.moveThing(this, to)
-    this.mp -= to.distance(this.pos)
     this.pos = to
-    await this.game.emit('unit:move', { unit: this, from })
+
+    await this.game.emit('unit:move', { unit: this, path: [from, ...path] })
   }
 
   moveTargets(): Hex[] {

@@ -26,18 +26,25 @@ export default class Things extends React.Component<IProps, {}> {
     this.listeners.forEach(unsubscribe => unsubscribe())
   }
 
-  onUnitMove = async ({ unit, from }: { unit: Unit, from: Hex }) => {
+  onUnitMove = async ({ unit, path }: { unit: Unit, path: Hex[] }) => {
     const unitRef = this.refs[unit.id]
-    const cFrom = iso.projectHex(from)
-    const cTo = iso.projectHex(unit.pos)
+    const [from, ...steps] = path
+    if (!from) { // in case there is no movement (path of 0 length)
+      return
+    }
 
-    await anime({
-      targets: [unitRef],
-      translateX: [cFrom.x, cTo.x],
-      translateY: [cFrom.y, cTo.y],
-      easing: 'easeInOutQuad',
-      duration: 150,
-    }).finished
+    let cFrom = iso.projectHex(from)
+    for (const p of steps) {
+      const cTo = iso.projectHex(p)
+      await anime({
+        targets: [unitRef],
+        translateX: [cFrom.x, cTo.x],
+        translateY: [cFrom.y, cTo.y],
+        easing: 'easeInOutQuad',
+        duration: 100,
+      }).finished
+      cFrom = cTo
+    }
   }
 
   render() {
