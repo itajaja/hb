@@ -29,8 +29,6 @@ function cellsInMap(size: number) {
   return cellsInMap(size - 1) + (size - 1) * 6
 }
 
-
-
 function weightedRandomPick(items: number[]): number {
   const sum = items.reduce((a, b) => a + b, 0)
   const draw = Math.random() * sum
@@ -70,7 +68,7 @@ function pickOpponents(value: number, bag: IUnitType[] = []): IUnitType[] {
  */
 export function generateLevel(number): ILevelDefinition {
   const enemyValue = STARTING_ENEMY_VALUE + number * 10
-  const reward = enemyValue * Math.max(20 - number, 1) / 20
+  const reward = enemyValue * Math.max(20 - number, 1) / 70
   const mapSize = Math.min(MIN_MAP_SIZE + Math.floor(number / 3), MAX_MAP_SIZE)
   const pits = Math.floor(cellsInMap(mapSize) * 0.2)
 

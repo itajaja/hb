@@ -12,9 +12,9 @@ interface IActionScore {
 
 const STATUS_SCORE = {
   [UnitStatus.Guard]: -.2,
-  [UnitStatus.Sleeping]: .2,
+  [UnitStatus.Sleeping]: .4,
   [UnitStatus.Burning]: .2,
-  [UnitStatus.Slowed]: .2,
+  [UnitStatus.Slowed]: .3,
 }
 
 export default class UnitAi {
@@ -44,21 +44,25 @@ export default class UnitAi {
     return this.findPathTowardsEnemy()
   }
 
-  rankAction(result: IActionResult): number {
+  rankAction(result: IActionResult, last: boolean): number {
     let score = 0
+    if (!last) {
+      score -= .4
+    }
     result.targets.forEach(t => {
       const targetUnit = this.unit.game.things.get(t.unitId) as Unit
       const isAlly = targetUnit.factionId === this.unit.factionId
+
       if (t.damage) {
-        let damageScore = t.damage / targetUnit.hp
+        let damageScore = t.damage * 4 / targetUnit.hp
         damageScore *= isAlly ? -1 : 1
         score += damageScore
       }
       if (t.newPosition) {
-        score += .1 // just because why not
+        score -= .1 // just because why not
       }
       if (t.status) {
-        let statusScore = STATUS_SCORE[t.status.status]
+        let statusScore = STATUS_SCORE[t.status.status] || 0
         statusScore *= isAlly ? -1 : 1
         score += statusScore
       }
@@ -67,14 +71,14 @@ export default class UnitAi {
     return score
   }
 
-  getAction(): (() => Promise<any>) | null {
+  getAction(last = false): (() => Promise<any>) | null {
     let bestAction: IActionScore = {
       score: 0,
     }
 
     for (const action of this.unit.actions) {
       for (const target of action.targets()) {
-        const score = this.rankAction(action.performAction(target))
+        const score = this.rankAction(action.performAction(target), last)
         if (score > bestAction.score) {
           bestAction = { score, action, target }
         }
@@ -90,6 +94,6 @@ export default class UnitAi {
 
   getLastAction(): (() => Promise<any>) | null {
     // XXX consider removing this
-    return this.getAction()
+    return this.getAction(true)
   }
 }

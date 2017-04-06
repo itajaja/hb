@@ -19,7 +19,7 @@ export default class OpponentAi {
 
   hasCellEnemyUnit = (c: ICell) => {
     return c.thing && c.thing instanceof Unit
-      ? c.thing.factionId === this.store.state.playerFaction
+      ? c.thing.factionId !== this.store.state.game.currenFaction.id
       : false
   }
 

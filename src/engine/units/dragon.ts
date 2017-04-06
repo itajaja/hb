@@ -15,5 +15,5 @@ export default {
   ],
   traits: [flying],
 
-  cost: 20,
+  cost: 24,
 } as IUnitType
