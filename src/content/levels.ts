@@ -68,7 +68,7 @@ function pickOpponents(value: number, bag: IUnitType[] = []): IUnitType[] {
  */
 export function generateLevel(number): ILevelDefinition {
   const enemyValue = STARTING_ENEMY_VALUE + number * 10
-  const reward = enemyValue * Math.max(20 - number, 1) / 70
+  const reward = Math.floor(enemyValue * Math.max(20 - number, 1) / 70)
   const mapSize = Math.min(MIN_MAP_SIZE + Math.floor(number / 3), MAX_MAP_SIZE)
   const pits = Math.floor(cellsInMap(mapSize) * 0.2)
 
