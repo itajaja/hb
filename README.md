@@ -9,7 +9,7 @@ a dungeon crawler written in TypeScript using React and svg
 ## To start locally
 
 ```
-npm i
+yarn
 npm run start
 ```
 
