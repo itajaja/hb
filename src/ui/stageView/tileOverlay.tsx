@@ -7,8 +7,8 @@ import * as iso from './iso'
 export type OverlayState = 'selected' | 'hover' | 'target'
   | 'moveTarget' | 'areaOfEffect'
 
-type IProps = React.HTMLAttributes<{}> & React.SVGProps & {
-  state: OverlayState[],
+interface IProps {
+  state: OverlayState[]
 }
 
 const styles = StyleSheet.create({

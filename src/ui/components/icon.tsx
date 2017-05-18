@@ -21,14 +21,14 @@ const styles = StyleSheet.create({
   },
 })
 
-export type IProps = React.HTMLAttributes<{}> & React.SVGProps & {
-  icon: keyof typeof icons,
-  wrapped?: boolean,
-  classes?: any,
+interface IProps {
+  icon: keyof typeof icons
+  wrapped?: boolean
+  classes?: any
 }
 
 export default class Icon extends React.PureComponent<IProps, {}> {
-  renderIcon({ classes, icon, ...props }: IProps) {
+  renderIcon({ classes, icon, wrapped, ...props }: IProps) {
     const [background, ...elements] = icons[icon]
     const className = css(classes)
 

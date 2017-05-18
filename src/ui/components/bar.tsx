@@ -1,13 +1,17 @@
 import { css } from 'aphrodite'
 import * as React from 'react'
 
-type IProps = React.HTMLAttributes<{}> & React.SVGProps & {
-  x: number, y: number, width: number, height: number
-  value: number, backClasses?: any[],
+type IProps = React.SVGProps<SVGRectElement> & {
+  x: number
+  y: number
+  width: number
+  height: number
+  value: number
+  backClasses?: any[],
 }
 
 export default function Bar(
-  { x, y, width, height, backClasses, value, ...props }: IProps
+  { x, y, width, height, backClasses, value, ...props }: IProps,
 ) {
   const commonStyle = {x, y, height}
   const progress = value * width
